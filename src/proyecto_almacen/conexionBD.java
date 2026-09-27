@@ -1,5 +1,4 @@
 package proyecto_almacen;
-
 import java.sql.*;
 import javax.swing.JOptionPane;
 
