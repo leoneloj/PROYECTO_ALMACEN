@@ -1,22 +1,67 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package proyecto_almacen;
 
-/**
- *
- * @author PC
- */
+import java.sql.*;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 public class frm_Empresa extends javax.swing.JFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(frm_Empresa.class.getName());
+    /* Modelo para mostrar datos en la tabla */
+    DefaultTableModel modeloTablaEmpresa = new DefaultTableModel();
+
+    /* Objeto de conexión a la base de datos */
+    conexionBD conexionBD;
 
     /**
      * Creates new form frm_Empresa
      */
     public frm_Empresa() {
         initComponents();
+        this.setLocationRelativeTo(null); // Centra la ventana en la pantalla
+
+        /* Deshabilitar campos y botones al iniciar */
+        txtcodigoempresa.setEnabled(false);
+        txtnombreempresa.setEnabled(false);
+        BTN_Guardar.setEnabled(false);
+        BTN_Modificar.setEnabled(false);
+        BTN_Desactivar.setEnabled(false);
+
+        /* Crear la conexión al iniciar el formulario */
+        conexionBD = new conexionBD();
+
+        /* Verificar que la conexión fue exitosa */
+        if (conexionBD.getConnection() == null) {
+            JOptionPane.showMessageDialog(this, "No se pudo conectar con la base de datos.",
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
+        }
+
+        /* Definir los encabezados de la tabla */
+        String titulos[] = {"Código Empresa", "Nombre Empresa"};
+        modeloTablaEmpresa.setColumnIdentifiers(titulos);
+        JTABLE_Mant_Empresa.setModel(modeloTablaEmpresa);
+    }
+
+    /**
+     * Método para listar/refrescar los datos en el JTable desde la BD
+     */
+    public void mostrarEmpresas() {
+        JTABLE_Mant_Empresa.setAutoCreateRowSorter(true);
+        modeloTablaEmpresa.setRowCount(0); // Limpia la tabla antes de cargar datos
+        try {
+            ResultSet rs = conexionBD.listarEmpresas();
+
+            while (rs != null && rs.next()) {
+                Object[] fila = {
+                    rs.getInt("id_empresa"),
+                    rs.getString("razon_social")
+                };
+                modeloTablaEmpresa.addRow(fila);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al mostrar empresas:\n" + e.getMessage(),
+                    "Error de consulta", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
@@ -199,19 +244,50 @@ public class frm_Empresa extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtnombreempresaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtnombreempresaKeyTyped
-
+// Convierte automáticamente las letras a mayúsculas
+        char c = evt.getKeyChar();
+        if (Character.isLowerCase(c)) {
+            evt.setKeyChar(Character.toUpperCase(c));
+        }
     }//GEN-LAST:event_txtnombreempresaKeyTyped
 
     private void BTN_VerEmpresaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_VerEmpresaActionPerformed
-
+        this.mostrarEmpresas();
+        this.BTN_Guardar.setEnabled(false);
+        this.BTN_Desactivar.setEnabled(false);
+        this.BTN_Modificar.setEnabled(false);
+        txtcodigoempresa.setText("");
+        txtnombreempresa.setText("");
+        txtnombreempresa.setEnabled(false);
     }//GEN-LAST:event_BTN_VerEmpresaActionPerformed
 
     private void JTABLE_Mant_EmpresaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JTABLE_Mant_EmpresaMouseClicked
+        txtnombreempresa.setEnabled(true);
+        int filaseleccionada = JTABLE_Mant_Empresa.getSelectedRow();
 
+        if (filaseleccionada >= 0) {
+            String codigo = JTABLE_Mant_Empresa.getValueAt(filaseleccionada, 0).toString();
+            String nombre = JTABLE_Mant_Empresa.getValueAt(filaseleccionada, 1).toString();
+
+            txtcodigoempresa.setText(codigo);
+            txtnombreempresa.setText(nombre);
+
+            BTN_Modificar.setEnabled(true);
+            BTN_Desactivar.setEnabled(true);
+            BTN_Guardar.setEnabled(false);
+        }
     }//GEN-LAST:event_JTABLE_Mant_EmpresaMouseClicked
 
     private void BTN_NuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_NuevoActionPerformed
+        txtcodigoempresa.setText("");
+        txtnombreempresa.setText("");
 
+        txtnombreempresa.requestFocus();
+        txtnombreempresa.setEnabled(true);
+
+        BTN_Guardar.setEnabled(true);
+        BTN_Desactivar.setEnabled(false);
+        BTN_Modificar.setEnabled(false);
     }//GEN-LAST:event_BTN_NuevoActionPerformed
 
     private void BTN_GuardarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BTN_GuardarMouseClicked
@@ -219,23 +295,113 @@ public class frm_Empresa extends javax.swing.JFrame {
     }//GEN-LAST:event_BTN_GuardarMouseClicked
 
     private void BTN_GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_GuardarActionPerformed
+        String nombre = txtnombreempresa.getText().trim();
 
+        if (nombre.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese el nombre de la empresa", "Campo requerido", JOptionPane.WARNING_MESSAGE);
+            txtnombreempresa.requestFocus();
+            return;
+        }
+
+        int respuesta = JOptionPane.showConfirmDialog(this, "¿Desea guardar el registro de la empresa?", "Confirmación", JOptionPane.YES_NO_OPTION);
+
+        if (respuesta == JOptionPane.YES_OPTION) {
+            try {
+                conexionBD.insertarEmpresa(nombre);
+                JOptionPane.showMessageDialog(this, "Empresa registrada correctamente", "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
+                this.mostrarEmpresas();
+
+                txtcodigoempresa.setText("");
+                txtnombreempresa.setText("");
+                txtnombreempresa.setEnabled(false);
+                BTN_Guardar.setEnabled(false);
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Error al registrar empresa:\n" + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_BTN_GuardarActionPerformed
 
     private void BTN_ModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_ModificarActionPerformed
+        String codStr = txtcodigoempresa.getText().trim();
+        String nuevoNombre = txtnombreempresa.getText().trim();
 
+        if (codStr.isEmpty() || nuevoNombre.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Seleccione una empresa y complete el nuevo nombre", "Campo requerido", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int codigo = Integer.parseInt(codStr);
+
+        int respuesta = JOptionPane.showConfirmDialog(this, "¿Desea modificar esta empresa?", "Confirmación", JOptionPane.YES_NO_OPTION);
+
+        if (respuesta == JOptionPane.YES_OPTION) {
+            try {
+                conexionBD.modificarEmpresa(codigo, nuevoNombre);
+                JOptionPane.showMessageDialog(this, "Empresa modificada correctamente", "Modificación exitosa", JOptionPane.INFORMATION_MESSAGE);
+
+                this.mostrarEmpresas();
+
+                txtcodigoempresa.setText("");
+                txtnombreempresa.setText("");
+                txtnombreempresa.setEnabled(false);
+                BTN_Desactivar.setEnabled(false);
+                BTN_Modificar.setEnabled(false);
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Error al modificar empresa:\n" + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_BTN_ModificarActionPerformed
 
     private void BTN_DesactivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_DesactivarActionPerformed
+        String codStr = txtcodigoempresa.getText().trim();
+        if (codStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Seleccione una empresa en la tabla para desactivar.", "Campo requerido", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
+        int codigo = Integer.parseInt(codStr);
+
+        int opcion = JOptionPane.showConfirmDialog(this, "¿Está seguro de que desea desactivar esta empresa?", "Confirmar desactivación", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+        if (opcion == JOptionPane.YES_OPTION) {
+            try {
+                conexionBD.desactivarEmpresa(codigo);
+                JOptionPane.showMessageDialog(this, "Empresa desactivada correctamente.", "Operación exitosa", JOptionPane.INFORMATION_MESSAGE);
+
+                this.mostrarEmpresas();
+
+                txtcodigoempresa.setText("");
+                txtnombreempresa.setText("");
+                txtnombreempresa.setEnabled(false);
+                BTN_Desactivar.setEnabled(false);
+                BTN_Modificar.setEnabled(false);
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Error al desactivar empresa:\n" + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_BTN_DesactivarActionPerformed
 
     private void BTN_EXCELActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_EXCELActionPerformed
-
+        JOptionPane.showMessageDialog(this, "Función Exportar Excel disponible.", "Información", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_BTN_EXCELActionPerformed
 
     private void TXT_BuscarEmpresaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXT_BuscarEmpresaKeyReleased
+modeloTablaEmpresa.setRowCount(0);
+        String nombre = TXT_BuscarEmpresa.getText().trim();
 
+        try {
+            ResultSet rs = conexionBD.buscarEmpresas(nombre);
+
+            while (rs != null && rs.next()) {
+                Object[] fila = {
+                    rs.getInt("id_empresa"),
+                    rs.getString("razon_social")
+                };
+                modeloTablaEmpresa.addRow(fila);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al buscar empresas:\n" + e.getMessage(), "Error de búsqueda", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_TXT_BuscarEmpresaKeyReleased
 
     private void TXT_BuscarEmpresaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXT_BuscarEmpresaKeyTyped
@@ -243,11 +409,19 @@ public class frm_Empresa extends javax.swing.JFrame {
     }//GEN-LAST:event_TXT_BuscarEmpresaKeyTyped
 
     private void BTN_Cerrar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_Cerrar1ActionPerformed
-
+int confirmacion = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que deseas cerrar el formulario?", "Confirmar salida", JOptionPane.YES_NO_OPTION);
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            try {
+                conexionBD.cerrarConexion();
+            } catch (Exception e) {
+                System.err.println("Error al cerrar la conexión: " + e.getMessage());
+            }
+            dispose();
+        }
     }//GEN-LAST:event_BTN_Cerrar1ActionPerformed
 
     private void BTN_PDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_PDFActionPerformed
-
+JOptionPane.showMessageDialog(this, "Función Exportar PDF disponible.", "Información", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_BTN_PDFActionPerformed
 
     /**
