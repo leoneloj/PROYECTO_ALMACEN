@@ -5,7 +5,7 @@ import javax.swing.JOptionPane;
 
 public class conexionBD {
 
-    /* Variables de instancia para la conexión y ejecución de consultas */
+    /* Variables de instancia para la conexión y consultas */
     private Connection conn;
     private Statement st;
     private ResultSet rs;
@@ -15,7 +15,7 @@ public class conexionBD {
     private static final String USER = "root";
     private static final String PASSWORD = "";
 
-    /* Constructor: se ejecuta al crear el objeto y conecta con la base de datos */
+    /* Constructor: Conecta con la base de datos bdalmacen */
     public conexionBD() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -24,7 +24,7 @@ public class conexionBD {
         } catch (ClassNotFoundException e) {
             System.out.println("X Error: Driver de MySQL no encontrado.");
         } catch (SQLException e) {
-            System.out.println("X Error al conectar la base de datos bdalmacen: " + e.getMessage());
+            System.out.println("X Error al conectar con bdalmacen: " + e.getMessage());
         }
     }
 
@@ -36,7 +36,7 @@ public class conexionBD {
     //                   MANTENIMIENTO A LA TABLA EMPRESA
     // =========================================================================
 
-    // 1. Listar todas las empresas activas usando la vista view_empresa
+    // 1. Listar todas las empresas activas desde la vista view_empresa
     public ResultSet listarEmpresas() throws SQLException {
         String sql = "SELECT id_empresa, razon_social, ruc, telefono, correo FROM view_empresa";
         st = conn.createStatement();
@@ -80,7 +80,7 @@ public class conexionBD {
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setInt(1, codigo);
             pst.executeUpdate();
-            System.out.println("Empresa desactivada/eliminada correctamente...!");
+            System.out.println("Empresa eliminada/desactivada correctamente...!");
         }
     }
 
@@ -93,6 +93,14 @@ public class conexionBD {
             System.out.println("Conexión cerrada exitosamente.");
         } catch (SQLException e) {
             System.out.println("Error al cerrar la conexión: " + e.getMessage());
+        }
+    }
+
+    /* Método main para probar la conexión directamente desde esta clase */
+    public static void main(String[] args) {
+        conexionBD prueba = new conexionBD();
+        if (prueba.getConnection() != null) {
+            System.out.println("¡Prueba exitosa! Conectado a bdalmacen.");
         }
     }
 }
