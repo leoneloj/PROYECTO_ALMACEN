@@ -82,6 +82,58 @@ public class conexionBD {
         }
     }
 
+    
+    
+    //                      MANTENIMIENTO A LA TABLA AREA
+  
+
+    // 1. Listar todas las áreas activas desde la vista view_area
+    public ResultSet listarAreas() throws SQLException {
+        String sql = "SELECT id_area, nombre_area FROM view_area";
+        st = conn.createStatement();
+        rs = st.executeQuery(sql);
+        return rs;
+    }
+
+    // 2. Buscar áreas por coincidencia de nombre
+    public ResultSet buscarAreas(String nombre) throws SQLException {
+        String sql = "SELECT id_area, nombre_area FROM view_area WHERE nombre_area LIKE ?";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setString(1, "%" + nombre + "%");
+        rs = pst.executeQuery();
+        return rs;
+    }
+
+    // 3. Insertar una nueva área
+    public void insertarArea(String nombreArea) throws SQLException {
+        String sql = "INSERT INTO area (nombre_area) VALUES (?)";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, nombreArea);
+            pst.executeUpdate();
+            System.out.println("Área insertada correctamente...!");
+        }
+    }
+
+    // 4. Modificar una área existente
+    public void modificarArea(int codigo, String nuevoNombre) throws SQLException {
+        String sql = "UPDATE area SET nombre_area = ? WHERE id_area = ?";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, nuevoNombre);
+            pst.setInt(2, codigo);
+            pst.executeUpdate();
+            System.out.println("Área modificada correctamente...!");
+        }
+    }
+
+    // 5. Dar de baja / eliminar área
+    public void desactivarArea(int codigo) throws SQLException {
+        String sql = "DELETE FROM area WHERE id_area = ?";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setInt(1, codigo);
+            pst.executeUpdate();
+            System.out.println("Área eliminada/desactivada correctamente...!");
+        }
+    }
     // Método para cerrar recursos
     public void cerrarConexion() {
         try {
