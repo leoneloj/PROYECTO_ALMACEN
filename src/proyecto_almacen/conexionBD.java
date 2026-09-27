@@ -15,7 +15,7 @@ public class conexionBD {
     private Statement st;
     private ResultSet rs;
     /*Parametros de conexion (ajusta según tu entorno)*/
-    private static final String URL = "jdbc:mysql://localhost:3306/universidad202620";
+    private static final String URL = "jdbc:mysql://localhost:3306/bdalmacen";
     private static final String USER = "root";
     private static final String PASSWORD = "";
 
