@@ -32,9 +32,8 @@ public class conexionBD {
         return conn;
     }
 
-    // =========================================================================
+
     //                   MANTENIMIENTO A LA TABLA EMPRESA
-    // =========================================================================
 
     // 1. Listar todas las empresas activas desde la vista view_empresa
     public ResultSet listarEmpresas() throws SQLException {
