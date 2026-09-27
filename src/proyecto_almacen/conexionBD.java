@@ -7,6 +7,7 @@ package proyecto_almacen;
 
 import java.sql.*;
 
+
 public class conexionBD {
 
     /*Variables de instancia para la conexion y ejecucion de consultas*/
