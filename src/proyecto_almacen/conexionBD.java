@@ -1,12 +1,6 @@
-
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package proyecto_almacen;
 
 import java.sql.*;
-
 
 public class conexionBD {
 
@@ -15,7 +9,7 @@ public class conexionBD {
     private Statement st;
     private ResultSet rs;
     /*Parametros de conexion (ajusta según tu entorno)*/
-    private static final String URL = "jdbc:mysql://localhost:3306/bdalmacen";
+    private static final String URL = "jdbc:mysql://localhost:3306/universidad202620";
     private static final String USER = "root";
     private static final String PASSWORD = "";
 
@@ -33,7 +27,30 @@ public class conexionBD {
             System.out.println("X Error al conectar la base de datos. ");
         }
     }/*FINALIZAR*/
- 
+ /*Método: Obtiene el listado de escuelas profesionales (con JOIN a facultad y escuela profesional) */
+    public ResultSet listarEscuelasProfesionales() throws SQLException {
+        String sql = "select*from view_escuelasprofesionales";
+        st = conn.createStatement();
+        rs = st.executeQuery(sql);
+        return rs;
+    }
+
+    /*Metodo para listar los cursos*/
+    public ResultSet listarCursos() throws SQLException {
+        String sql = "select*from";
+        st = conn.createStatement();
+        rs = st.executeQuery(sql);
+        return rs;
+    }
+
+    /*Metodo para listar los usuarios*/
+    public ResultSet listarUsuarios() throws SQLException {
+        String sql = "select*from";
+        st = conn.createStatement();
+        rs = st.executeQuery(sql);
+        return rs;
+    }
+
     /* MANTENIMIENTO A LA TABLA FACULTAD */
     // 1. Método para listar todas las facultades activas usando la vista
     public ResultSet listarFacultades() throws SQLException {
