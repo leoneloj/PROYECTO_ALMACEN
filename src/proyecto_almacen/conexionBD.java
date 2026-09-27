@@ -33,30 +33,7 @@ public class conexionBD {
             System.out.println("X Error al conectar la base de datos. ");
         }
     }/*FINALIZAR*/
- /*Método: Obtiene el listado de escuelas profesionales (con JOIN a facultad y escuela profesional) */
-    public ResultSet listarEscuelasProfesionales() throws SQLException {
-        String sql = "select*from view_escuelasprofesionales";
-        st = conn.createStatement();
-        rs = st.executeQuery(sql);
-        return rs;
-    }
-
-    /*Metodo para listar los cursos*/
-    public ResultSet listarCursos() throws SQLException {
-        String sql = "select*from";
-        st = conn.createStatement();
-        rs = st.executeQuery(sql);
-        return rs;
-    }
-
-    /*Metodo para listar los usuarios*/
-    public ResultSet listarUsuarios() throws SQLException {
-        String sql = "select*from";
-        st = conn.createStatement();
-        rs = st.executeQuery(sql);
-        return rs;
-    }
-
+ 
     /* MANTENIMIENTO A LA TABLA FACULTAD */
     // 1. Método para listar todas las facultades activas usando la vista
     public ResultSet listarFacultades() throws SQLException {
