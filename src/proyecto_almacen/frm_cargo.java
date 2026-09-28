@@ -289,27 +289,31 @@ txtcodigocargo.setText("");
     private void BTN_GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_GuardarActionPerformed
 String nombre = txtnombrecargo.getText().trim();
 
-        if (nombre.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Ingrese el nombre del cargo", "Campo requerido", JOptionPane.WARNING_MESSAGE);
-            txtnombrecargo.requestFocus();
-            return;
-        }
-        int respuesta = JOptionPane.showConfirmDialog(this, "¿Desea guardar el registro del cargo?", "Confirmación", JOptionPane.YES_NO_OPTION);
+    if (nombre.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Ingrese el nombre del cargo", "Campo requerido", JOptionPane.WARNING_MESSAGE);
+        txtnombrecargo.requestFocus();
+        return;
+    }
 
-        if (respuesta == JOptionPane.YES_OPTION) {
-            try {
-                conexionBD.insertarCargo(nombre);
-                JOptionPane.showMessageDialog(this, "Cargo registrado correctamente", "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
-                this.mostrarCargos();
+    int respuesta = JOptionPane.showConfirmDialog(this, "¿Desea guardar el registro del cargo?", "Confirmación", JOptionPane.YES_NO_OPTION);
 
-                txtcodigocargo.setText("");
-                txtnombrecargo.setText("");
-                txtnombrecargo.setEnabled(false);
-                BTN_Guardar.setEnabled(false);
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, "Error al registrar cargo:\n" + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
-            }
+    if (respuesta == JOptionPane.YES_OPTION) {
+        try {
+            conexionBD.insertarCargo(nombre);
+            JOptionPane.showMessageDialog(this, "Cargo registrado correctamente", "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
+            
+            // Actualizar la lista en orden
+            this.mostrarCargos();
+
+            // Limpiar y deshabilitar controles
+            txtcodigocargo.setText("");
+            txtnombrecargo.setText("");
+            txtnombrecargo.setEnabled(false);
+            BTN_Guardar.setEnabled(false);
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error al registrar cargo:\n" + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
         }
+    }
     }//GEN-LAST:event_BTN_GuardarActionPerformed
 
     private void BTN_ModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_ModificarActionPerformed
