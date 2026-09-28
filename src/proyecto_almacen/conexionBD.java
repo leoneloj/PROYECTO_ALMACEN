@@ -32,47 +32,48 @@ public class conexionBD {
         return conn;
     }
 
-    //                   MANTENIMIENTO A LA TABLA EMPRESA
-    
-    // 1. Listar todas las empresas activas desde la vista view_empresa
+   // =========================================================================
+    //                     MANTENIMIENTO A LA TABLA EMPRESA
+    // =========================================================================
+
     public ResultSet listarEmpresas() throws SQLException {
-        String sql = "SELECT id_empresa, razon_social, ruc, telefono, correo FROM view_empresa";
+        String sql = "SELECT id_empresa, ruc, razon_social FROM view_empresa ORDER BY id_empresa ASC";
         st = conn.createStatement();
         rs = st.executeQuery(sql);
         return rs;
     }
 
-    // 2. Buscar empresas por coincidencia de nombre / razón social
-    public ResultSet buscarEmpresas(String nombre) throws SQLException {
-        String sql = "SELECT id_empresa, razon_social, ruc, telefono, correo FROM view_empresa WHERE razon_social LIKE ?";
+    public ResultSet buscarEmpresas(String criterio) throws SQLException {
+        String sql = "SELECT id_empresa, ruc, razon_social FROM view_empresa WHERE razon_social LIKE ? OR ruc LIKE ? ORDER BY id_empresa ASC";
         PreparedStatement pst = conn.prepareStatement(sql);
-        pst.setString(1, "%" + nombre + "%");
+        pst.setString(1, "%" + criterio + "%");
+        pst.setString(2, "%" + criterio + "%");
         rs = pst.executeQuery();
         return rs;
     }
 
-    // 3. Insertar una nueva empresa
+   // Insertar empresa recibiendo solo el nombre/razón social desde el formulario
     public void insertarEmpresa(String razonSocial) throws SQLException {
-        String sql = "INSERT INTO empresa (razon_social) VALUES (?)";
+        String sql = "INSERT INTO empresa (ruc, razon_social) VALUES (?, ?)";
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
-            pst.setString(1, razonSocial);
+            pst.setString(1, "00000000000"); // RUC temporal por defecto
+            pst.setString(2, razonSocial);
             pst.executeUpdate();
-            System.out.println("Empresa insertada correctamente...!");
+            System.out.println("Empresa registrada correctamente...!");
         }
     }
 
-    // 4. Modificar una empresa existente
-    public void modificarEmpresa(int codigo, String nuevoNombre) throws SQLException {
+    // Modificar empresa recibiendo el código y el nuevo nombre
+    public void modificarEmpresa(int codigo, String razonSocial) throws SQLException {
         String sql = "UPDATE empresa SET razon_social = ? WHERE id_empresa = ?";
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
-            pst.setString(1, nuevoNombre);
+            pst.setString(1, razonSocial);
             pst.setInt(2, codigo);
             pst.executeUpdate();
             System.out.println("Empresa modificada correctamente...!");
         }
     }
 
-    // 5. Dar de baja / eliminar empresa
     public void desactivarEmpresa(int codigo) throws SQLException {
         String sql = "DELETE FROM empresa WHERE id_empresa = ?";
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -81,7 +82,6 @@ public class conexionBD {
             System.out.println("Empresa eliminada/desactivada correctamente...!");
         }
     }
-
     //                      MANTENIMIENTO A LA TABLA AREA
     
     // 1. Listar todas las áreas activas desde la vista view_area
