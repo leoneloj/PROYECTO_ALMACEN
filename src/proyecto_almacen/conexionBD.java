@@ -140,7 +140,7 @@ public class conexionBD {
             if (rs != null) rs.close();
             if (st != null) st.close();
             if (conn != null) conn.close();
-            System.out.println("Conexión cerrada exitosamente.");
+            System.out.println("Conexion cerrada exitosamente.");
         } catch (SQLException e) {
             System.out.println("Error al cerrar la conexión: " + e.getMessage());
         }
