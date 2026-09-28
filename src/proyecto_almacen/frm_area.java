@@ -292,20 +292,20 @@ String nombre = txtnombrearea.getText().trim();
 
         // 1. Validar que no esté vacío
         if (nombre.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Ingrese el nombre del área", "Campo requerido", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Ingrese el nombre del area", "Campo requerido", JOptionPane.WARNING_MESSAGE);
             txtnombrearea.requestFocus();
             return;
         }
 
         // 2. Confirmación
-        int respuesta = JOptionPane.showConfirmDialog(this, "¿Desea guardar el registro del área?", "Confirmación", JOptionPane.YES_NO_OPTION);
+        int respuesta = JOptionPane.showConfirmDialog(this, "¿Desea guardar el registro del area?", "Confirmación", JOptionPane.YES_NO_OPTION);
 
         if (respuesta == JOptionPane.YES_OPTION) {
             try {
                 // 3. Llamar a insertarArea en conexionBD
                 conexionBD.insertarArea(nombre);
 
-                JOptionPane.showMessageDialog(this, "Área registrada correctamente", "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "area registrada correctamente", "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
 
                 // 4. Actualizar la tabla y resetear controles
                 this.mostrarAreas();
@@ -316,7 +316,7 @@ String nombre = txtnombrearea.getText().trim();
                 BTN_Guardar.setEnabled(false);
 
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, "Error al registrar área:\n" + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error al registrar area:\n" + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_BTN_GuardarActionPerformed
@@ -326,18 +326,18 @@ String codStr = txtcodigoarea.getText().trim();
         String nuevoNombre = txtnombrearea.getText().trim();
 
         if (codStr.isEmpty() || nuevoNombre.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Seleccione un área y complete el nuevo nombre", "Campo requerido", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Seleccione un area y complete el nuevo nombre", "Campo requerido", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         int codigo = Integer.parseInt(codStr);
 
-        int respuesta = JOptionPane.showConfirmDialog(this, "¿Desea modificar esta área?", "Confirmación", JOptionPane.YES_NO_OPTION);
+        int respuesta = JOptionPane.showConfirmDialog(this, "¿Desea modificar esta area?", "Confirmación", JOptionPane.YES_NO_OPTION);
 
         if (respuesta == JOptionPane.YES_OPTION) {
             try {
                 conexionBD.modificarArea(codigo, nuevoNombre);
-                JOptionPane.showMessageDialog(this, "Área modificada correctamente", "Modificación exitosa", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "area modificada correctamente", "Modificación exitosa", JOptionPane.INFORMATION_MESSAGE);
 
                 this.mostrarAreas();
 
@@ -348,7 +348,7 @@ String codStr = txtcodigoarea.getText().trim();
                 BTN_Modificar.setEnabled(false);
 
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, "Error al modificar área:\n" + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error al modificar area:\n" + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_BTN_ModificarActionPerformed
