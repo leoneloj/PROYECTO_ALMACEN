@@ -132,19 +132,21 @@ public class conexionBD {
         }
     }
 
+    // =========================================================================
     //                      MANTENIMIENTO A LA TABLA CARGO
-    
-    // 1. Listar todos los cargos desde la vista view_cargo
+    // =========================================================================
+
+    // 1. Listar todos los cargos garantizando el orden por id_cargo ASC
     public ResultSet listarCargos() throws SQLException {
-        String sql = "SELECT id_cargo, nombre_cargo FROM view_cargo";
+        String sql = "SELECT id_cargo, nombre_cargo FROM view_cargo ORDER BY id_cargo ASC";
         st = conn.createStatement();
         rs = st.executeQuery(sql);
         return rs;
     }
 
-    // 2. Buscar cargos por coincidencia de nombre
+    // 2. Buscar cargos por coincidencia de nombre ordenados por id_cargo ASC
     public ResultSet buscarCargos(String nombre) throws SQLException {
-        String sql = "SELECT id_cargo, nombre_cargo FROM view_cargo WHERE nombre_cargo LIKE ?";
+        String sql = "SELECT id_cargo, nombre_cargo FROM view_cargo WHERE nombre_cargo LIKE ? ORDER BY id_cargo ASC";
         PreparedStatement pst = conn.prepareStatement(sql);
         pst.setString(1, "%" + nombre + "%");
         rs = pst.executeQuery();
@@ -181,7 +183,6 @@ public class conexionBD {
             System.out.println("Cargo eliminado/desactivado correctamente...!");
         }
     }
-
     // Método para cerrar recursos
     public void cerrarConexion() {
         try {
