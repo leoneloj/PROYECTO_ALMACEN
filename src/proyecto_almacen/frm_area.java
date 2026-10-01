@@ -5,14 +5,14 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class frm_area extends javax.swing.JFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(frm_area.class.getName());
     /* Modelo para mostrar datos en la tabla */
     DefaultTableModel modeloTablaArea = new DefaultTableModel();
 
     /* Objeto de conexión a la base de datos */
     conexionBD conexionBD;
-    
+
     public frm_area() {
         initComponents();//inicializa los compones visuales
         txtcodigoarea.setEnabled(false);
@@ -41,7 +41,7 @@ public class frm_area extends javax.swing.JFrame {
 
         //deshabilitar campo de codigo (solo lo mostrara, no se escribe)
         txtcodigoarea.setEnabled(false);
-        
+
     }
 
     /**
@@ -260,16 +260,16 @@ public class frm_area extends javax.swing.JFrame {
 
     private void BTN_NuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_NuevoActionPerformed
 //limpiar los campos de texto
-txtcodigoarea.setText("");
-txtnombrearea.setText("");
-txtdescripcion.setText("");
+        txtcodigoarea.setText("");
+        txtnombrearea.setText("");
+        txtdescripcion.setText("");
 //Da el foco al campo de nombre para que el usuarioempiece a escribir
-txtnombrearea.requestFocus();
-txtnombrearea.setEnabled(true);
+        txtnombrearea.requestFocus();
+        txtnombrearea.setEnabled(true);
 //Habilita el boton guardar(en caso estee deshabilitado)
-BTN_Guardar.setEnabled(true);
-BTN_Desactivar.setEnabled(false);
-BTN_Modificar.setEnabled(false);
+        BTN_Guardar.setEnabled(true);
+        BTN_Desactivar.setEnabled(false);
+        BTN_Modificar.setEnabled(false);
     }//GEN-LAST:event_BTN_NuevoActionPerformed
 
     private void BTN_GuardarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BTN_GuardarMouseClicked
@@ -279,44 +279,94 @@ BTN_Modificar.setEnabled(false);
     private void BTN_GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_GuardarActionPerformed
 // 1. Validar que el campo no esté vacío
 // 1. Validar que los campos no estén vacíos
-String nombre = txtnombrearea.getText().trim();
-String descripcion = txtdescripcion.getText().trim(); // Asegúrate de que el campo de texto se llame así
+        String nombre = txtnombrearea.getText().trim();
+        String descripcion = txtdescripcion.getText().trim(); // Asegúrate de que el campo de texto se llame así
 
-if (nombre.isEmpty() || descripcion.isEmpty()) {
-    JOptionPane.showMessageDialog(this, "Ingrese el nombre y la descripción del Área",
-            "Campo requerido", JOptionPane.WARNING_MESSAGE);
-    txtnombrearea.requestFocus();
-    return;
-}
+        if (nombre.isEmpty() || descripcion.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese el nombre y la descripción del Área",
+                    "Campo requerido", JOptionPane.WARNING_MESSAGE);
+            txtnombrearea.requestFocus();
+            return;
+        }
 // 2. Confirmar si el usuario desea guardar
-int respuesta = JOptionPane.showConfirmDialog(this,
-"¿Desea guardar el registro de Area?", "Confirmación", JOptionPane.YES_NO_OPTION);
+        int respuesta = JOptionPane.showConfirmDialog(this,
+                "¿Desea guardar el registro de Area?", "Confirmación", JOptionPane.YES_NO_OPTION);
 
-if (respuesta == JOptionPane.YES_OPTION) {
-    try {
-        // 3. Llamar al método para insertar
-        conexionBD.insertarArea(nombre, descripcion);
+        if (respuesta == JOptionPane.YES_OPTION) {
+            try {
+                // 3. Llamar al método para insertar
+                conexionBD.insertarArea(nombre, descripcion);
 
-        // 4. Mostrar mensaje de éxito
-        JOptionPane.showMessageDialog(this, "Area registrada correctamente",
-                "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
+                // 4. Mostrar mensaje de éxito
+                JOptionPane.showMessageDialog(this, "Area registrada correctamente",
+                        "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
 
-        // 5. Actualizar tabla y limpiar campos
-        this.MostrarAreas();
+                // 5. Actualizar tabla y limpiar campos
+                this.MostrarAreas();
 
-    } catch (SQLException ex) {
-        JOptionPane.showMessageDialog(this, "Error al registrar Area:\n"
-                + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
-    }
-}
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Error al registrar Area:\n"
+                        + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_BTN_GuardarActionPerformed
 //validar que se haya seleccionado un registro
     private void BTN_ModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_ModificarActionPerformed
-String coString = txtcodigoarea.getText().trim();
+        String codStr = txtcodigoarea.getText().trim();
+        String nuevoNombre = txtnombrearea.getText().trim();
+        String nuevaDescripcion = txtdescripcion.getText().trim();
+        if (codStr.isEmpty() || nuevoNombre.isEmpty() || nuevaDescripcion.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Seleccione una area y complete"
+                    + "el nuevo nombre", "campo requerido", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int codigo = Integer.parseInt(codStr);
+//confirmacion del usuario
+        int respuesta = JOptionPane.showConfirmDialog(this,
+                "¿Desea modifcar esta area?", "confirmacion",
+                JOptionPane.YES_NO_OPTION);
+        if (respuesta == JOptionPane.YES_OPTION) {
+            try {
+                conexionBD.modificarArea(codigo, nuevoNombre, nuevaDescripcion);
+                JOptionPane.showMessageDialog(this, "Area modificada correctamente",
+                        "Modificacion exitosa", JOptionPane.INFORMATION_MESSAGE);
+                this.MostrarAreas();//metodo actualizar
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error al modificar facultad:\n"
+                        + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
     }//GEN-LAST:event_BTN_ModificarActionPerformed
 
     private void BTN_DesactivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_DesactivarActionPerformed
-
+// 1. Validar que se haya seleccionado una facultad
+        /*String codStr = txtcodigoarea.getText().trim();
+        if (codStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Seleccione una area en la tabla para desactivar.", "Campo requerido", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int codigo = Integer.parseInt(codStr); // Convertir a entero
+        // 2. Confirmar la acción con el usuario
+        int opcion = JOptionPane.showConfirmDialog(this, "¿Está seguro de que desea desactivar este proveedor?", "Confirmar desactivación", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (opcion == JOptionPane.YES_OPTION) {
+            try {
+                // 3. Llamar al método que ejecuta el procedure de desactivación
+                conexionBD.desact(codigo);
+                // 4. Mostrar mensaje de éxito
+                JOptionPane.showMessageDialog(this, "Facultad desactivada correctamente.", "Operación exitosa", JOptionPane.INFORMATION_MESSAGE);
+                // 5. Actualizar tabla y limpiar campos
+                this.MostrarAreas();
+                // Limpia los campos de texto
+                txtcodigoProveedor.setText("");
+                txtRazonSocial.setText("");
+                BTN_DesactivarProveedor.setEnabled(false);
+                BTN_ModificarProveedor.setEnabled(false);
+            } catch (SQLException ex) {
+                // 6. Captura cualquier error lanzado por el procedure (por SIGNAL)
+                JOptionPane.showMessageDialog(this, "Error al desactivar cliente:\n" + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
+            }
+        }*/
     }//GEN-LAST:event_BTN_DesactivarActionPerformed
 
     private void BTN_EXCELActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_EXCELActionPerformed
@@ -324,7 +374,18 @@ String coString = txtcodigoarea.getText().trim();
     }//GEN-LAST:event_BTN_EXCELActionPerformed
 
     private void BTN_Cerrar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_Cerrar1ActionPerformed
-
+int confirmacion = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que deseas cerrar el formulario?", "Confirmar salida",
+                JOptionPane.YES_NO_OPTION);
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            try {
+                // Cerrar conexión si tienes un método cerrarConexion()
+                conexionBD.cerrarConexion();
+            } catch (Exception e) {
+                System.err.println("Error al cerrar la conexión: " + e.getMessage());
+            }
+            // Cierra el formulario actual
+            dispose(); // o this.dispose() si estás dentro del formulario
+        }
     }//GEN-LAST:event_BTN_Cerrar1ActionPerformed
 
     private void JTABLE_Mant_AreasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JTABLE_Mant_AreasMouseClicked
@@ -335,7 +396,7 @@ String coString = txtcodigoarea.getText().trim();
             String codigo = JTABLE_Mant_Areas.getValueAt(filaSeleccionada, 0).toString();
             String nombre = JTABLE_Mant_Areas.getValueAt(filaSeleccionada, 1).toString();
             String descripcion = JTABLE_Mant_Areas.getValueAt(filaSeleccionada, 1).toString();
-            
+
             txtcodigoarea.setText(codigo);
             txtnombrearea.setText(nombre);
             txtdescripcion.setText(descripcion);
@@ -346,7 +407,7 @@ String coString = txtcodigoarea.getText().trim();
             BTN_Desactivar.setEnabled(true);
             //opcional: Deshabilitar boton guardar (si es necesario)
             BTN_Guardar.setEnabled(false);
-            
+
         }
     }//GEN-LAST:event_JTABLE_Mant_AreasMouseClicked
 
@@ -363,7 +424,7 @@ String coString = txtcodigoarea.getText().trim();
     }//GEN-LAST:event_TXT_BuscarAreasKeyTyped
 
     private void TXT_BuscarAreasKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXT_BuscarAreasKeyReleased
-this.buscarArea();
+        this.buscarArea();
     }//GEN-LAST:event_TXT_BuscarAreasKeyReleased
 
     private void txtnombreareaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtnombreareaActionPerformed
@@ -439,7 +500,7 @@ this.buscarArea();
                     rs.getInt("id_area"),
                     rs.getString("nombre_area"),
                     rs.getString("descripcion")};
-                
+
                 modeloTablaArea.addRow(fila);
             }
         } catch (SQLException e) {
@@ -448,7 +509,7 @@ this.buscarArea();
                     "Error de consulta", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     public void buscarArea() {
         // Limpia la tabla antes de mostrar los resultados filtrados
         modeloTablaArea.setRowCount(0);
@@ -472,5 +533,5 @@ this.buscarArea();
                     "Error de busqueda", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
 }
