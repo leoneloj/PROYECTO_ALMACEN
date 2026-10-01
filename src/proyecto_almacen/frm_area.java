@@ -1,64 +1,52 @@
-
 package proyecto_almacen;
+
 import java.sql.*;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+
 public class frm_area extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(frm_area.class.getName());
-/* Modelo para mostrar datos en la tabla */
+    /* Modelo para mostrar datos en la tabla */
     DefaultTableModel modeloTablaArea = new DefaultTableModel();
 
     /* Objeto de conexión a la base de datos */
     conexionBD conexionBD;
+    
     public frm_area() {
-        initComponents();
-        this.setLocationRelativeTo(null); // Centrar en pantalla
-
-        /* Deshabilitar campos y botones al iniciar */
+        initComponents();//inicializa los compones visuales
         txtcodigoarea.setEnabled(false);
-        txtnombrearea.setEnabled(false);
         BTN_Guardar.setEnabled(false);
         BTN_Modificar.setEnabled(false);
         BTN_Desactivar.setEnabled(false);
 
-        /* Crear la conexión al iniciar el formulario */
+        //crear la conexion al inciar el formulario
         conexionBD = new conexionBD();
 
-        /* Verificar que la conexión fue exitosa */
+        //verificar que la conexion fue exitosa
         if (conexionBD.getConnection() == null) {
-            JOptionPane.showMessageDialog(this, "No se pudo conectar con la base de datos.",
-                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showConfirmDialog(this, "No se pudo conectar con la base de datos .",
+                    "error de conexion", JOptionPane.ERROR_MESSAGE);
+            return; //Evita continuar si no hay conexion
         }
 
-        /* Definir encabezados de la tabla */
-        String titulos[] = {"Código Área", "Nombre Área"};
+        //definir los encabezados de la tabla
+        String titulos[] = {"codigo area", "Nombre area", "Descipcion"};
+
+        //asignar los titulos al modelo
         modeloTablaArea.setColumnIdentifiers(titulos);
+
+        //Establecer el modelo a la JTable
         JTABLE_Mant_Areas.setModel(modeloTablaArea);
+
+        //deshabilitar campo de codigo (solo lo mostrara, no se escribe)
+        txtcodigoarea.setEnabled(false);
+        
     }
 
     /**
      * Método para listar/refrescar los datos en el JTable desde la BD
      */
-    public void mostrarAreas() {
-        JTABLE_Mant_Areas.setAutoCreateRowSorter(true);
-        modeloTablaArea.setRowCount(0); // Limpia la tabla antes de cargar datos
-        try {
-            ResultSet rs = conexionBD.listarArea();
-
-            while (rs != null && rs.next()) {
-                Object[] fila = {
-                    rs.getInt("id_area"),
-                    rs.getString("nombre_area")
-                };
-                modeloTablaArea.addRow(fila);
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al mostrar áreas:\n" + e.getMessage(),
-                    "Error de consulta", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -82,8 +70,8 @@ public class frm_area extends javax.swing.JFrame {
         BTN_EXCEL = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        TXT_BuscarAreas = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
+        TXT_BuscarAreas = new javax.swing.JTextField();
         BTN_Cerrar1 = new javax.swing.JButton();
         BTN_EXCEL1 = new javax.swing.JButton();
 
@@ -127,6 +115,7 @@ public class frm_area extends javax.swing.JFrame {
         txtnombrearea.setForeground(new java.awt.Color(0, 0, 204));
         txtnombrearea.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtnombrearea.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        txtnombrearea.addActionListener(this::txtnombreareaActionPerformed);
         txtnombrearea.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtnombreareaKeyTyped(evt);
@@ -223,6 +212,13 @@ public class frm_area extends javax.swing.JFrame {
         jLabel4.setText("Ingresar el Nombre de la Facultad");
         jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 10, -1, 30));
 
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
+        jLabel5.setText("BUSCAR");
+        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 10, 120, 30));
+
+        TXT_BuscarAreas.addActionListener(this::TXT_BuscarAreasActionPerformed);
         TXT_BuscarAreas.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 TXT_BuscarAreasKeyReleased(evt);
@@ -231,13 +227,7 @@ public class frm_area extends javax.swing.JFrame {
                 TXT_BuscarAreasKeyTyped(evt);
             }
         });
-        jPanel2.add(TXT_BuscarAreas, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 10, 290, -1));
-
-        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
-        jLabel5.setText("BUSCAR");
-        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 10, 120, 30));
+        jPanel2.add(TXT_BuscarAreas, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 10, 290, -1));
 
         jPanel5.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 270, 810, 50));
 
@@ -263,11 +253,23 @@ public class frm_area extends javax.swing.JFrame {
     }//GEN-LAST:event_txtdescripcionKeyTyped
 
     private void BTN_VerAreasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_VerAreasActionPerformed
+//llama  a la tabla mostrar cliente
+        this.MostrarAreas();
 
     }//GEN-LAST:event_BTN_VerAreasActionPerformed
 
     private void BTN_NuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_NuevoActionPerformed
-
+//limpiar los campos de texto
+txtcodigoarea.setText("");
+txtnombrearea.setText("");
+txtdescripcion.setText("");
+//Da el foco al campo de nombre para que el usuarioempiece a escribir
+txtnombrearea.requestFocus();
+txtnombrearea.setEnabled(true);
+//Habilita el boton guardar(en caso estee deshabilitado)
+BTN_Guardar.setEnabled(true);
+BTN_Desactivar.setEnabled(false);
+BTN_Modificar.setEnabled(false);
     }//GEN-LAST:event_BTN_NuevoActionPerformed
 
     private void BTN_GuardarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BTN_GuardarMouseClicked
@@ -275,11 +277,42 @@ public class frm_area extends javax.swing.JFrame {
     }//GEN-LAST:event_BTN_GuardarMouseClicked
 
     private void BTN_GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_GuardarActionPerformed
+// 1. Validar que el campo no esté vacío
+// 1. Validar que los campos no estén vacíos
+String nombre = txtnombrearea.getText().trim();
+String descripcion = txtdescripcion.getText().trim(); // Asegúrate de que el campo de texto se llame así
 
+if (nombre.isEmpty() || descripcion.isEmpty()) {
+    JOptionPane.showMessageDialog(this, "Ingrese el nombre y la descripción del Área",
+            "Campo requerido", JOptionPane.WARNING_MESSAGE);
+    txtnombrearea.requestFocus();
+    return;
+}
+// 2. Confirmar si el usuario desea guardar
+int respuesta = JOptionPane.showConfirmDialog(this,
+"¿Desea guardar el registro de Area?", "Confirmación", JOptionPane.YES_NO_OPTION);
+
+if (respuesta == JOptionPane.YES_OPTION) {
+    try {
+        // 3. Llamar al método para insertar
+        conexionBD.insertarArea(nombre, descripcion);
+
+        // 4. Mostrar mensaje de éxito
+        JOptionPane.showMessageDialog(this, "Area registrada correctamente",
+                "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
+
+        // 5. Actualizar tabla y limpiar campos
+        this.MostrarAreas();
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this, "Error al registrar Area:\n"
+                + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
+    }
+}
     }//GEN-LAST:event_BTN_GuardarActionPerformed
-
+//validar que se haya seleccionado un registro
     private void BTN_ModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_ModificarActionPerformed
-
+String coString = txtcodigoarea.getText().trim();
     }//GEN-LAST:event_BTN_ModificarActionPerformed
 
     private void BTN_DesactivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_DesactivarActionPerformed
@@ -290,20 +323,31 @@ public class frm_area extends javax.swing.JFrame {
 
     }//GEN-LAST:event_BTN_EXCELActionPerformed
 
-    private void TXT_BuscarAreasKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXT_BuscarAreasKeyReleased
-
-    }//GEN-LAST:event_TXT_BuscarAreasKeyReleased
-
-    private void TXT_BuscarAreasKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXT_BuscarAreasKeyTyped
-
-    }//GEN-LAST:event_TXT_BuscarAreasKeyTyped
-
     private void BTN_Cerrar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_Cerrar1ActionPerformed
 
     }//GEN-LAST:event_BTN_Cerrar1ActionPerformed
 
     private void JTABLE_Mant_AreasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JTABLE_Mant_AreasMouseClicked
-
+//obtener la fila seleccionada
+        int filaSeleccionada = JTABLE_Mant_Areas.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            //llenar los campos de texto con los datos de la fila
+            String codigo = JTABLE_Mant_Areas.getValueAt(filaSeleccionada, 0).toString();
+            String nombre = JTABLE_Mant_Areas.getValueAt(filaSeleccionada, 1).toString();
+            String descripcion = JTABLE_Mant_Areas.getValueAt(filaSeleccionada, 1).toString();
+            
+            txtcodigoarea.setText(codigo);
+            txtnombrearea.setText(nombre);
+            txtdescripcion.setText(descripcion);
+            //Habilitar el campo para editar nombre
+            txtnombrearea.setEnabled(true);
+            //Habilitar botones relacionados
+            BTN_Modificar.setEnabled(true);
+            BTN_Desactivar.setEnabled(true);
+            //opcional: Deshabilitar boton guardar (si es necesario)
+            BTN_Guardar.setEnabled(false);
+            
+        }
     }//GEN-LAST:event_JTABLE_Mant_AreasMouseClicked
 
     private void txtnombreareaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtnombreareaKeyTyped
@@ -313,6 +357,22 @@ public class frm_area extends javax.swing.JFrame {
     private void BTN_EXCEL1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_EXCEL1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_BTN_EXCEL1ActionPerformed
+
+    private void TXT_BuscarAreasKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXT_BuscarAreasKeyTyped
+
+    }//GEN-LAST:event_TXT_BuscarAreasKeyTyped
+
+    private void TXT_BuscarAreasKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXT_BuscarAreasKeyReleased
+this.buscarArea();
+    }//GEN-LAST:event_TXT_BuscarAreasKeyReleased
+
+    private void txtnombreareaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtnombreareaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtnombreareaActionPerformed
+
+    private void TXT_BuscarAreasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TXT_BuscarAreasActionPerformed
+
+    }//GEN-LAST:event_TXT_BuscarAreasActionPerformed
 
     /**
      * @param args the command line arguments
@@ -364,4 +424,53 @@ public class frm_area extends javax.swing.JFrame {
     private javax.swing.JTextField txtdescripcion;
     private javax.swing.JTextField txtnombrearea;
     // End of variables declaration//GEN-END:variables
+ public void MostrarAreas() {
+        txtnombrearea.setEnabled(true);/*desactivar y activar nombreFacultad*/
+        //Ordenar Asc, Desc
+        JTABLE_Mant_Areas.setAutoCreateRowSorter(true);
+        //Limpia la tabla antes de mostrar nuevos datos
+        modeloTablaArea.setRowCount(0);
+        try {
+            //Llama al métdo que devuelve los datos de facultad
+            ResultSet rs = conexionBD.listarArea();
+            //Recorre cada fila del resultado y agrega a la tabla
+            while (rs.next()) {
+                Object[] fila = {
+                    rs.getInt("id_area"),
+                    rs.getString("nombre_area"),
+                    rs.getString("descripcion")};
+                
+                modeloTablaArea.addRow(fila);
+            }
+        } catch (SQLException e) {
+            //Muestra mensaje si ocurre un error en la consulta
+            JOptionPane.showMessageDialog(this, "Error al mostrar Cliente:\n" + e.getMessage(),
+                    "Error de consulta", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    public void buscarArea() {
+        // Limpia la tabla antes de mostrar los resultados filtrados
+        modeloTablaArea.setRowCount(0);
+        // obtiene el texto ingresado por el usuario
+        String busqueda = TXT_BuscarAreas.getText().trim();
+        try {
+            // Consulta los datos usando el procedimiento almacenado en la BD
+            ResultSet rs = conexionBD.buscarArea(busqueda);
+
+            // Recorre los resultados y los anade a la tablal
+            while (rs.next()) {
+                Object[] fila = {
+                    rs.getInt("id_area"),
+                    rs.getString("nombre_area"),
+                    rs.getString("descripcion"),};
+                modeloTablaArea.addRow(fila);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al buscar Areas: \n" + e.getMessage(),
+                    "Error de busqueda", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
 }
