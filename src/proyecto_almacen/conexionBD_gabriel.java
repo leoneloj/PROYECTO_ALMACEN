@@ -32,56 +32,7 @@ public class conexionBD_gabriel {
     }
 
 
-    //                   MANTENIMIENTO A LA TABLA EMPRESA
-
-    // 1. Listar todas las empresas activas desde la vista view_empresa
-    public ResultSet listarEmpresas() throws SQLException {
-        String sql = "SELECT id_empresa, razon_social, ruc, telefono, correo FROM view_empresa";
-        st = conn.createStatement();
-        rs = st.executeQuery(sql);
-        return rs;
-    }
-
-    // 2. Buscar empresas por coincidencia de nombre / razón social
-    public ResultSet buscarEmpresas(String nombre) throws SQLException {
-        String sql = "SELECT id_empresa, razon_social, ruc, telefono, correo FROM view_empresa WHERE razon_social LIKE ?";
-        PreparedStatement pst = conn.prepareStatement(sql);
-        pst.setString(1, "%" + nombre + "%");
-        rs = pst.executeQuery();
-        return rs;
-    }
-
-    // 3. Insertar una nueva empresa
-    public void insertarEmpresa(String razonSocial) throws SQLException {
-        String sql = "INSERT INTO empresa (razon_social) VALUES (?)";
-        try (PreparedStatement pst = conn.prepareStatement(sql)) {
-            pst.setString(1, razonSocial);
-            pst.executeUpdate();
-            System.out.println("Empresa insertada correctamente...!");
-        }
-    }
-
-    // 4. Modificar una empresa existente
-    public void modificarEmpresa(int codigo, String nuevoNombre) throws SQLException {
-        String sql = "UPDATE empresa SET razon_social = ? WHERE id_empresa = ?";
-        try (PreparedStatement pst = conn.prepareStatement(sql)) {
-            pst.setString(1, nuevoNombre);
-            pst.setInt(2, codigo);
-            pst.executeUpdate();
-            System.out.println("Empresa modificada correctamente...!");
-        }
-    }
-
-    // 5. Dar de baja / eliminar empresa
-    public void desactivarEmpresa(int codigo) throws SQLException {
-        String sql = "DELETE FROM empresa WHERE id_empresa = ?";
-        try (PreparedStatement pst = conn.prepareStatement(sql)) {
-            pst.setInt(1, codigo);
-            pst.executeUpdate();
-            System.out.println("Empresa eliminada/desactivada correctamente...!");
-        }
-    }
-
+  
     // Método para cerrar recursos
     public void cerrarConexion() {
         try {
