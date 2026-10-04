@@ -18,8 +18,6 @@ public class frm_area extends javax.swing.JFrame {
         txtcodigoarea.setEnabled(false);
         BTN_Guardar.setEnabled(false);
         BTN_Modificar.setEnabled(false);
-        BTN_Desactivar.setEnabled(false);
-
         //crear la conexion al inciar el formulario
         conexionBD = new conexionBD();
 
@@ -66,7 +64,6 @@ public class frm_area extends javax.swing.JFrame {
         BTN_Nuevo = new javax.swing.JButton();
         BTN_Guardar = new javax.swing.JButton();
         BTN_Modificar = new javax.swing.JButton();
-        BTN_Desactivar = new javax.swing.JButton();
         BTN_EXCEL = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
@@ -172,7 +169,7 @@ public class frm_area extends javax.swing.JFrame {
         BTN_Nuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/registro.png"))); // NOI18N
         BTN_Nuevo.setText("NUEVO");
         BTN_Nuevo.addActionListener(this::BTN_NuevoActionPerformed);
-        jPanel5.add(BTN_Nuevo, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 200, 190, 50));
+        jPanel5.add(BTN_Nuevo, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 200, 190, 50));
 
         BTN_Guardar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Guardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/disco-flexible (1).png"))); // NOI18N
@@ -183,19 +180,13 @@ public class frm_area extends javax.swing.JFrame {
             }
         });
         BTN_Guardar.addActionListener(this::BTN_GuardarActionPerformed);
-        jPanel5.add(BTN_Guardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 200, 190, 50));
+        jPanel5.add(BTN_Guardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 200, 190, 50));
 
         BTN_Modificar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Modificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/ahorrar.png"))); // NOI18N
         BTN_Modificar.setText("MODIFICAR");
         BTN_Modificar.addActionListener(this::BTN_ModificarActionPerformed);
-        jPanel5.add(BTN_Modificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 200, 200, 50));
-
-        BTN_Desactivar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        BTN_Desactivar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/expediente.png"))); // NOI18N
-        BTN_Desactivar.setText("DAR DE BAJA");
-        BTN_Desactivar.addActionListener(this::BTN_DesactivarActionPerformed);
-        jPanel5.add(BTN_Desactivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 200, 180, 50));
+        jPanel5.add(BTN_Modificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 200, 200, 50));
 
         BTN_EXCEL.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_EXCEL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/archivo-de-acrobat-reader.png"))); // NOI18N
@@ -243,14 +234,10 @@ public class frm_area extends javax.swing.JFrame {
         BTN_EXCEL1.addActionListener(this::BTN_EXCEL1ActionPerformed);
         jPanel5.add(BTN_EXCEL1, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 560, 120, 40));
 
-        getContentPane().add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 0, 900, 610));
+        getContentPane().add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 900, 610));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void txtdescripcionKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtdescripcionKeyTyped
-
-    }//GEN-LAST:event_txtdescripcionKeyTyped
 
     private void BTN_VerAreasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_VerAreasActionPerformed
 //llama  a la tabla mostrar cliente
@@ -268,7 +255,6 @@ public class frm_area extends javax.swing.JFrame {
         txtnombrearea.setEnabled(true);
 //Habilita el boton guardar(en caso estee deshabilitado)
         BTN_Guardar.setEnabled(true);
-        BTN_Desactivar.setEnabled(false);
         BTN_Modificar.setEnabled(false);
     }//GEN-LAST:event_BTN_NuevoActionPerformed
 
@@ -332,42 +318,12 @@ public class frm_area extends javax.swing.JFrame {
                         "Modificacion exitosa", JOptionPane.INFORMATION_MESSAGE);
                 this.MostrarAreas();//metodo actualizar
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error al modificar facultad:\n"
+                JOptionPane.showMessageDialog(this, "Error al modificar cargo:\n"
                         + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
             }
         }
 
     }//GEN-LAST:event_BTN_ModificarActionPerformed
-
-    private void BTN_DesactivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_DesactivarActionPerformed
-// 1. Validar que se haya seleccionado una facultad
-        /*String codStr = txtcodigoarea.getText().trim();
-        if (codStr.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Seleccione una area en la tabla para desactivar.", "Campo requerido", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        int codigo = Integer.parseInt(codStr); // Convertir a entero
-        // 2. Confirmar la acción con el usuario
-        int opcion = JOptionPane.showConfirmDialog(this, "¿Está seguro de que desea desactivar este proveedor?", "Confirmar desactivación", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-        if (opcion == JOptionPane.YES_OPTION) {
-            try {
-                // 3. Llamar al método que ejecuta el procedure de desactivación
-                conexionBD.desact(codigo);
-                // 4. Mostrar mensaje de éxito
-                JOptionPane.showMessageDialog(this, "Facultad desactivada correctamente.", "Operación exitosa", JOptionPane.INFORMATION_MESSAGE);
-                // 5. Actualizar tabla y limpiar campos
-                this.MostrarAreas();
-                // Limpia los campos de texto
-                txtcodigoProveedor.setText("");
-                txtRazonSocial.setText("");
-                BTN_DesactivarProveedor.setEnabled(false);
-                BTN_ModificarProveedor.setEnabled(false);
-            } catch (SQLException ex) {
-                // 6. Captura cualquier error lanzado por el procedure (por SIGNAL)
-                JOptionPane.showMessageDialog(this, "Error al desactivar cliente:\n" + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
-            }
-        }*/
-    }//GEN-LAST:event_BTN_DesactivarActionPerformed
 
     private void BTN_EXCELActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_EXCELActionPerformed
 
@@ -404,7 +360,6 @@ int confirmacion = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que d
             txtnombrearea.setEnabled(true);
             //Habilitar botones relacionados
             BTN_Modificar.setEnabled(true);
-            BTN_Desactivar.setEnabled(true);
             //opcional: Deshabilitar boton guardar (si es necesario)
             BTN_Guardar.setEnabled(false);
 
@@ -435,6 +390,10 @@ int confirmacion = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que d
 
     }//GEN-LAST:event_TXT_BuscarAreasActionPerformed
 
+    private void txtdescripcionKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtdescripcionKeyTyped
+
+    }//GEN-LAST:event_txtdescripcionKeyTyped
+
     /**
      * @param args the command line arguments
      */
@@ -462,7 +421,6 @@ int confirmacion = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que d
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BTN_Cerrar1;
-    private javax.swing.JButton BTN_Desactivar;
     private javax.swing.JButton BTN_EXCEL;
     private javax.swing.JButton BTN_EXCEL1;
     private javax.swing.JButton BTN_Guardar;

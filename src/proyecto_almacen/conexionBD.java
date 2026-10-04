@@ -32,62 +32,74 @@ public class conexionBD {
         return conn;
     }
 
-   // =========================================================================
-    //                     MANTENIMIENTO A LA TABLA EMPRESA
+  // =========================================================================
+    //                 MANTENIMIENTO A LA TABLA EMPRESA
     // =========================================================================
 
-    public ResultSet listarEmpresas() throws SQLException {
-        String sql = "SELECT id_empresa, ruc, razon_social FROM view_empresa ORDER BY id_empresa ASC";
+    /* 1. Método para listar todas las empresas activas usando la vista */
+    public ResultSet listarEmpresa() throws SQLException {
+        String sql = "SELECT * FROM vw_empresa_activa";
         st = conn.createStatement();
         rs = st.executeQuery(sql);
         return rs;
     }
 
-    public ResultSet buscarEmpresas(String criterio) throws SQLException {
-        String sql = "SELECT id_empresa, ruc, razon_social FROM view_empresa WHERE razon_social LIKE ? OR ruc LIKE ? ORDER BY id_empresa ASC";
-        PreparedStatement pst = conn.prepareStatement(sql);
-        pst.setString(1, "%" + criterio + "%");
-        pst.setString(2, "%" + criterio + "%");
-        rs = pst.executeQuery();
+    /* 2. Método para buscar empresas por coincidencia de nombre o RUC */
+    public ResultSet buscarEmpresa(String criterio) throws SQLException {
+        String sql = "{CALL sp_empresa_buscar(?)}";
+        CallableStatement cs = conn.prepareCall(sql);
+        cs.setString(1, criterio);
+        rs = cs.executeQuery();
         return rs;
     }
 
-    
-   // Insertar empresa recibiendo solo el nombre/razón social desde el formulario
-    public void insertarEmpresa(String razonSocial) throws SQLException {
-        String sql = "INSERT INTO empresa (ruc, razon_social) VALUES (?, ?)";
-        try (PreparedStatement pst = conn.prepareStatement(sql)) {
-            pst.setString(1, "00000000000"); // RUC temporal por defecto
-            pst.setString(2, razonSocial);
-            pst.executeUpdate();
-            System.out.println("Empresa registrada correctamente...!");
+    /* 3. Método para insertar una nueva empresa */
+    public void insertarEmpresa(
+            String razonSocial,
+            String ruc,
+            String telefono,
+            String correo) throws SQLException {
+
+        String sql = "{CALL sp_empresa_insertar(?, ?, ?, ?)}";
+
+        try (CallableStatement cs = conn.prepareCall(sql)) {
+            cs.setString(1, razonSocial);
+            cs.setString(2, ruc);
+            cs.setString(3, telefono);
+            cs.setString(4, correo);
+            cs.execute();
+
+            System.out.println("Empresa insertada correctamente...!");
         }
     }
 
-    // Modificar empresa recibiendo el código y el nuevo nombre
-    public void modificarEmpresa(int codigo, String razonSocial) throws SQLException {
-        String sql = "UPDATE empresa SET razon_social = ? WHERE id_empresa = ?";
-        try (PreparedStatement pst = conn.prepareStatement(sql)) {
-            pst.setString(1, razonSocial);
-            pst.setInt(2, codigo);
-            pst.executeUpdate();
+    /* 4. Método para modificar una empresa existente */
+    public void modificarEmpresa(
+            int idEmpresa,
+            String nuevaRazonSocial,
+            String nuevoRuc,
+            String nuevoTelefono,
+            String nuevoCorreo) throws SQLException {
+
+        String sql = "{CALL sp_empresa_actualizar(?,?,?,?,?)}";
+
+        try (CallableStatement cs = conn.prepareCall(sql)) {
+            cs.setInt(1, idEmpresa);
+            cs.setString(2, nuevaRazonSocial);
+            cs.setString(3, nuevoRuc);
+            cs.setString(4, nuevoTelefono);
+            cs.setString(5, nuevoCorreo);
+            cs.executeUpdate();
+
             System.out.println("Empresa modificada correctamente...!");
         }
     }
-
-    public void desactivarEmpresa(int codigo) throws SQLException {
-        String sql = "DELETE FROM empresa WHERE id_empresa = ?";
-        try (PreparedStatement pst = conn.prepareStatement(sql)) {
-            pst.setInt(1, codigo);
-            pst.executeUpdate();
-            System.out.println("Empresa eliminada/desactivada correctamente...!");
-        }
-    }
     
     
+    // =========================================================================
     //                      MANTENIMIENTO A LA TABLA AREA
-    
-    
+    // =========================================================================
+
     
     /* 1. Método para listar todos los clientes activos usando la vista */
 public ResultSet listarArea() throws SQLException {
@@ -128,7 +140,7 @@ public void modificarArea(
         String nuevoNombre,
         String nuevaDescripcion) throws SQLException {
 
-    String sql = "{CALL sp_area_actualizar(?,?)}";
+    String sql = "{CALL sp_area_actualizar(?,?,?)}";
 
     try (CallableStatement cs = conn.prepareCall(sql)) {
         cs.setInt(1, idArea);
@@ -140,67 +152,215 @@ public void modificarArea(
     }
 }
 
-    /* 5. Dar de baja / eliminar área
-    public void desactivarArea(int codigo) throws SQLException {
-        String sql = "DELETE FROM area WHERE id_area = ?";
-        try (PreparedStatement pst = conn.prepareStatement(sql)) {
-            pst.setInt(1, codigo);
-            pst.executeUpdate();
-            System.out.println("Área eliminada/desactivada correctamente...!");
-        }
-    }*/
+  
 
     // =========================================================================
-    //                      MANTENIMIENTO A LA TABLA CARGO
+    //                    MANTENIMIENTO A LA TABLA CARGO
     // =========================================================================
 
-    // 1. Listar todos los cargos garantizando el orden por id_cargo ASC
-    public ResultSet listarCargos() throws SQLException {
-        String sql = "SELECT id_cargo, nombre_cargo FROM view_cargo ORDER BY id_cargo ASC";
+    /* 1. Método para listar todos los cargos activos usando la vista */
+    public ResultSet listarCargo() throws SQLException {
+        String sql = "SELECT * FROM vw_cargo_activo";
         st = conn.createStatement();
         rs = st.executeQuery(sql);
         return rs;
     }
 
-    // 2. Buscar cargos por coincidencia de nombre ordenados por id_cargo ASC
-    public ResultSet buscarCargos(String nombre) throws SQLException {
-        String sql = "SELECT id_cargo, nombre_cargo FROM view_cargo WHERE nombre_cargo LIKE ? ORDER BY id_cargo ASC";
-        PreparedStatement pst = conn.prepareStatement(sql);
-        pst.setString(1, "%" + nombre + "%");
-        rs = pst.executeQuery();
+    /* 2. Método para buscar cargos por coincidencia de nombres */
+    public ResultSet buscarCargo(String nombre) throws SQLException {
+        String sql = "{CALL sp_cargo_buscar(?)}";
+        CallableStatement cs = conn.prepareCall(sql);
+        cs.setString(1, nombre);
+        rs = cs.executeQuery();
         return rs;
     }
 
-    // 3. Insertar un nuevo cargo
+    /* 3. Método para insertar un nuevo cargo */
     public void insertarCargo(String nombreCargo) throws SQLException {
-        String sql = "INSERT INTO cargo (nombre_cargo) VALUES (?)";
-        try (PreparedStatement pst = conn.prepareStatement(sql)) {
-            pst.setString(1, nombreCargo);
-            pst.executeUpdate();
+        String sql = "{CALL sp_cargo_insertar(?)}";
+
+        try (CallableStatement cs = conn.prepareCall(sql)) {
+            cs.setString(1, nombreCargo);
+            cs.execute();
             System.out.println("Cargo insertado correctamente...!");
         }
     }
 
-    // 4. Modificar un cargo existente
-    public void modificarCargo(int codigo, String nuevoNombre) throws SQLException {
-        String sql = "UPDATE cargo SET nombre_cargo = ? WHERE id_cargo = ?";
-        try (PreparedStatement pst = conn.prepareStatement(sql)) {
-            pst.setString(1, nuevoNombre);
-            pst.setInt(2, codigo);
-            pst.executeUpdate();
+    /* 4. Método para modificar un cargo existente */
+    public void modificarCargo(int idCargo, String nuevoNombre) throws SQLException {
+        String sql = "{CALL sp_cargo_actualizar(?, ?)}";
+
+        try (CallableStatement cs = conn.prepareCall(sql)) {
+            cs.setInt(1, idCargo);
+            cs.setString(2, nuevoNombre);
+            cs.executeUpdate();
             System.out.println("Cargo modificado correctamente...!");
         }
     }
 
-    // 5. Dar de baja / eliminar cargo
-    public void desactivarCargo(int codigo) throws SQLException {
-        String sql = "DELETE FROM cargo WHERE id_cargo = ?";
-        try (PreparedStatement pst = conn.prepareStatement(sql)) {
-            pst.setInt(1, codigo);
-            pst.executeUpdate();
-            System.out.println("Cargo eliminado/desactivado correctamente...!");
+    /* 5. Método para dar de baja / desactivar un cargo */
+    public void darDeBajaCargo(int idCargo) throws SQLException {
+        String sql = "{CALL sp_cargo_desactivar(?)}";
+
+        try (CallableStatement cs = conn.prepareCall(sql)) {
+            cs.setInt(1, idCargo);
+            cs.executeUpdate();
+            System.out.println("Cargo dado de baja correctamente...!");
         }
     }
+   /* 6. Método para listar cargos de baja (Usando número para inactivo/baja) */
+    public ResultSet listarCargosDeBaja() throws SQLException {
+        // Cambia el '0' por el número que use tu base de datos para indicar baja o inactivo
+        String sql = "SELECT * FROM vw_cargo_inactivos"; 
+        st = conn.createStatement();
+        rs = st.executeQuery(sql);
+        return rs;
+    }
+
+    /* 7. Método para reactivar un cargo (Usando número para activo) */
+    public void reactivarCargo(int idCargo) throws SQLException {
+        // Cambia el '1' por el número que use tu base de datos para indicar activo
+        String sql = "UPDATE cargo SET estado_cargo = 1 WHERE id_cargo = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idCargo);
+            ps.executeUpdate();
+            System.out.println("Cargo reactivado correctamente...!");
+        }
+    }
+    
+     // =========================================================================
+    //                    MANTENIMIENTO A LA TABLA SUCURSAL
+    // =========================================================================
+   /*1. Para cargar las empresas al JComboBox */
+    public ResultSet combobox_ListarEmpresas() throws SQLException {
+        String sql = "SELECT razon_social FROM empresa";
+        st = conn.createStatement();
+        rs = st.executeQuery(sql);
+        return rs;
+    }
+
+    /*2. Obtiene el ID dado el nombre o razón social de la empresa */
+    public int obtenerCodigoEmpresa(String razonSocial) throws SQLException {
+        String sql = "SELECT id_empresa FROM empresa WHERE razon_social = ?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1, razonSocial);
+        ResultSet rsAux = ps.executeQuery();
+        if (rsAux.next()) {
+            return rsAux.getInt("id_empresa");
+        } else {
+            return -1;
+        }
+    }
+
+    /*3. Listar sucursales en la tabla: Activas con su respectiva empresa usando la vista estándar */
+    public ResultSet verSucursales() throws SQLException {
+        String sql = "SELECT * FROM vw_sucursal_activa";
+        st = conn.createStatement();
+        rs = st.executeQuery(sql);
+        return rs;
+    }
+
+    /*4. Buscar sucursal por nombre usando el procedimiento almacenado */
+    public ResultSet buscarSucursal(String criterio) throws SQLException {
+        String sql = "{CALL sp_sucursal_buscar(?)}";
+        CallableStatement cs = conn.prepareCall(sql);
+        cs.setString(1, criterio);
+        rs = cs.executeQuery();
+        return rs;
+    }
+
+    /*5. Insertar una nueva sucursal llamando al procedimiento almacenado */
+    public void insertarSucursal(int idEmpresa, String nombre, String direccion, String telefono) throws SQLException {
+        String sql = "{CALL sp_sucursal_insertar(?, ?, ?, ?)}";
+        try (CallableStatement cs = conn.prepareCall(sql)) {
+            cs.setInt(1, idEmpresa);
+            cs.setString(2, nombre);
+            cs.setString(3, direccion);
+            cs.setString(4, telefono);
+            cs.execute();
+        }
+    }
+
+    /*6. Modificar o actualizar los datos de una sucursal */
+    public void modificarSucursal(int idSucursal, int idEmpresa, String nuevoNombre, String nuevaDireccion, String nuevoTelefono) throws SQLException {
+        String sql = "{CALL sp_sucursal_actualizar(?, ?, ?, ?, ?)}";
+        try (CallableStatement cs = conn.prepareCall(sql)) {
+            cs.setInt(1, idSucursal);
+            cs.setInt(2, idEmpresa);
+            cs.setString(3, nuevoNombre);
+            cs.setString(4, nuevaDireccion);
+            cs.setString(5, nuevoTelefono);
+            cs.executeUpdate();
+        }
+    }
+    
+    // =========================================================================
+    //                    MANTENIMIENTO A LA TABLA SUBCATEGORIA
+    // =========================================================================
+   /*1. Para cargar las categorías al JComboBox */
+    public ResultSet combobox_ListarCategorias() throws SQLException {
+        String sql = "SELECT nombre FROM categoria";
+        st = conn.createStatement();
+        rs = st.executeQuery(sql);
+        return rs;
+    }
+
+    /*2. Obtiene el ID dado el nombre de la categoría */
+    public int obtenerCodigoCategoria(String nombreCategoria) throws SQLException {
+        String sql = "SELECT id_categoria FROM categoria WHERE nombre = ?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1, nombreCategoria);
+        ResultSet rsAux = ps.executeQuery();
+        if (rsAux.next()) {
+            return rsAux.getInt("id_categoria");
+        } else {
+            return -1;
+        }
+    }
+
+    /*3. Listar subcategorías en la tabla: Activas con su respectiva categoría usando la vista estándar */
+    public ResultSet verSubcategorias() throws SQLException {
+        String sql = "SELECT * FROM vw_subcategoria_activa";
+        st = conn.createStatement();
+        rs = st.executeQuery(sql);
+        return rs;
+    }
+
+    /*4. Buscar subcategoría por nombre usando el procedimiento almacenado */
+    public ResultSet buscarSubcategoria(String criterio) throws SQLException {
+        String sql = "{CALL sp_subcategoria_buscar(?)}";
+        CallableStatement cs = conn.prepareCall(sql);
+        cs.setString(1, criterio);
+        rs = cs.executeQuery();
+        return rs;
+    }
+
+    /*5. Insertar una nueva subcategoría llamando al procedimiento almacenado */
+    public void insertarSubcategoria(int idCategoria, String nombreSubcategoria, String descripcion) throws SQLException {
+        String sql = "{CALL sp_subcategoria_insertar(?, ?, ?)}";
+        try (CallableStatement cs = conn.prepareCall(sql)) {
+            cs.setInt(1, idCategoria);
+            cs.setString(2, nombreSubcategoria);
+            cs.setString(3, descripcion);
+            cs.execute();
+        }
+    }
+
+    /*6. Modificar o actualizar los datos de una subcategoría */
+    public void modificarSubcategoria(int idSubcategoria, int idCategoria, String nuevoNombre, String nuevaDescripcion) throws SQLException {
+        String sql = "{CALL sp_subcategoria_actualizar(?, ?, ?, ?)}";
+        try (CallableStatement cs = conn.prepareCall(sql)) {
+            cs.setInt(1, idSubcategoria);
+            cs.setInt(2, idCategoria);
+            cs.setString(3, nuevoNombre);
+            cs.setString(4, nuevaDescripcion);
+            cs.executeUpdate();
+        }
+    }
+    
+    
+    
     // Método para cerrar recursos
     public void cerrarConexion() {
         try {

@@ -3,16 +3,60 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package proyecto_almacen;
+
+import java.awt.Color;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
+
 public class frm_PinSeguridad extends javax.swing.JFrame {
-    
+
+    /*Variable global en tu clase del formulario*/
+    private int intentoFallidos = 0;
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(frm_PinSeguridad.class.getName());
 
-    /**
-     * Creates new form frm_PinSeguridad
-     */
     public frm_PinSeguridad() {
+        /*Quitar opciones*/
+        this.setUndecorated(rootPaneCheckingEnabled);
         initComponents();
+        /*Centrar*/
+        this.setLocationRelativeTo(this);
+
+        BTN_Ingresar.setEnabled(false);
+        TXTPASS.requestFocus();
+
+        // Si quieres aplicarlo a todos tus botones:
+        JButton[] botones = {btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn0, BTN_Ingresar,};
+        for (JButton b : botones) {
+            b.setBackground(Color.WHITE);
+            b.setOpaque(true);
+            b.setBorderPainted(false);
+            b.setContentAreaFilled(true);
+        }
+
+        // Listener para validar la longitud del password mientras escribe
+        TXTPASS.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                validarLongitud();
+            }
+
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                validarLongitud();
+            }
+
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                validarLongitud();
+            }
+        });
+    }
+
+// Método para validar longitud mínima
+    private void validarLongitud() {
+        String pass = new String(TXTPASS.getPassword());
+        if (pass.length() >= 4) {
+            BTN_Ingresar.setEnabled(true);
+        } else {
+            BTN_Ingresar.setEnabled(false);
+        }
     }
 
     /**
@@ -188,49 +232,49 @@ public class frm_PinSeguridad extends javax.swing.JFrame {
     }//GEN-LAST:event_TXTPASSKeyTyped
 
     private void btn3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn3ActionPerformed
-
+TXTPASS.setText(TXTPASS.getText() + "3");
     }//GEN-LAST:event_btn3ActionPerformed
 
     private void btn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn1ActionPerformed
-
+        TXTPASS.setText(TXTPASS.getText() + "1");
     }//GEN-LAST:event_btn1ActionPerformed
 
     private void btn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn2ActionPerformed
-
+        TXTPASS.setText(TXTPASS.getText() + "2");
     }//GEN-LAST:event_btn2ActionPerformed
 
     private void btn4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn4ActionPerformed
-
+TXTPASS.setText(TXTPASS.getText() + "4");
     }//GEN-LAST:event_btn4ActionPerformed
 
     private void btn5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn5ActionPerformed
-
+TXTPASS.setText(TXTPASS.getText() + "5");
     }//GEN-LAST:event_btn5ActionPerformed
 
     private void btn6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn6ActionPerformed
-
+TXTPASS.setText(TXTPASS.getText() + "6");
     }//GEN-LAST:event_btn6ActionPerformed
 
     private void btn7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn7ActionPerformed
-
+TXTPASS.setText(TXTPASS.getText() + "7");
     }//GEN-LAST:event_btn7ActionPerformed
 
     private void btn8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn8ActionPerformed
-
+TXTPASS.setText(TXTPASS.getText() + "8");
     }//GEN-LAST:event_btn8ActionPerformed
 
     private void btn9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn9ActionPerformed
-
+TXTPASS.setText(TXTPASS.getText() + "9");
     }//GEN-LAST:event_btn9ActionPerformed
 
     private void BTN_SalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_SalirActionPerformed
         // Muestra una ventana emergente de confirmación
         int opcion = JOptionPane.showConfirmDialog(
-            this,
-            "¿Está seguro de que desea salir del sistema?",
-            "Confirmar salida",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.QUESTION_MESSAGE
+                this,
+                "¿Está seguro de que desea salir del sistema?",
+                "Confirmar salida",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
         );
 
         // Si el usuario hace clic en "Sí" (YES_OPTION)
@@ -240,15 +284,56 @@ public class frm_PinSeguridad extends javax.swing.JFrame {
     }//GEN-LAST:event_BTN_SalirActionPerformed
 
     private void BTN_IngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_IngresarActionPerformed
-
+String pass=new String(TXTPASS.getPassword());
+    
+    /*PIN correcto (Ejemplo podrias traerlo de BD mas adelante)*/
+    String pinCorrecto="123456";
+    if(pass.equals(pinCorrecto)){
+        JOptionPane.showMessageDialog(this,
+                "Bienvenido al sistema Academico.\n Acceso concedido correctamente.",
+                "Acceso permitido", JOptionPane.INFORMATION_MESSAGE);
+        
+        /*Abrir login*/
+        frm_loginSeguridad menu=new frm_loginSeguridad();
+        menu.setVisible(true);
+        /*Cerrar el pin*/
+        this.dispose();
+        
+    }else{
+        intentoFallidos++;
+        int restantes=3- intentoFallidos;
+        
+        if(restantes>0){
+            JOptionPane.showMessageDialog(this,
+                "PIN incorrecto. \n Le quedan " + restantes + "intento(s).",
+                "Error de autenticación", JOptionPane.ERROR_MESSAGE);
+            
+            /*Limpiar*/
+            TXTPASS.setText("");
+            /*Se re-habilita solo cuando escriba 4 digitos*/
+            BTN_Ingresar.setEnabled(false);
+        }else{
+            JOptionPane.showMessageDialog(this,
+                "Ha superado el número máximo de intentos permitidos.\n" +
+                "El sistema academico se cerrara por seguridad.", 
+                "Acceso denegado", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);/*Cerrar el sistema*/
+        }
+    }
     }//GEN-LAST:event_BTN_IngresarActionPerformed
 
     private void btn0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn0ActionPerformed
-
+TXTPASS.setText(TXTPASS.getText() + "0");
     }//GEN-LAST:event_btn0ActionPerformed
 
     private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
-
+if (jRadioButton1.isSelected()) {
+            /*Mostrar contraseña*/
+            TXTPASS.setEchoChar((char) 0);
+        } else {
+            /*Ocultar la constraseña */
+            TXTPASS.setEchoChar('*');
+        }
     }//GEN-LAST:event_jRadioButton1ActionPerformed
 
     /**

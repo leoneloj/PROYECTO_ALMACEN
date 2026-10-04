@@ -15,11 +15,8 @@ public class frm_cargo extends javax.swing.JFrame {
 
     public frm_cargo() {
         initComponents();
-        this.setLocationRelativeTo(null); // Centrar formulario en pantalla
-
-        /* Estado inicial de controles */
+        this.setLocationRelativeTo(null); //inicializa los compones visuales
         txtcodigocargo.setEnabled(false);
-        txtnombrecargo.setEnabled(false);
         BTN_Guardar.setEnabled(false);
         BTN_Modificar.setEnabled(false);
         BTN_Desactivar.setEnabled(false);
@@ -34,47 +31,37 @@ public class frm_cargo extends javax.swing.JFrame {
         }
 
         /* Definir encabezados de la tabla */
-        String titulos[] = {"Código Cargo", "Nombre Cargo"};
+        String titulos[] = {"Código Cargo", "Nombre Cargo", "estado"};
+        //asignar los titulos al modelo
         modeloTablaCargo.setColumnIdentifiers(titulos);
-        JTABLE_Mant_Cargo.setModel(modeloTablaCargo);
+
+        //Establecer el modelo a la JTable
+        JTABLE_Mant_cargos.setModel(modeloTablaCargo);
+
+        //deshabilitar campo de codigo (solo lo mostrara, no se escribe)
+        txtcodigocargo.setEnabled(false);
     }
 
     /**
      * Método para listar/refrescar los datos en el JTable desde la BD
      */
-    public void mostrarCargos() {
-        JTABLE_Mant_Cargo.setAutoCreateRowSorter(true);
-        modeloTablaCargo.setRowCount(0); // Limpia la tabla antes de cargar datos
-        try {
-            ResultSet rs = conexionBD.listarCargos();
-
-            while (rs != null && rs.next()) {
-                Object[] fila = {
-                    rs.getInt("id_cargo"),
-                    rs.getString("nombre_cargo")
-                };
-                modeloTablaCargo.addRow(fila);
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al mostrar cargos:\n" + e.getMessage(),
-                    "Error de consulta", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel5 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         txtcodigocargo = new javax.swing.JTextField();
         txtnombrecargo = new javax.swing.JTextField();
-        BTN_VerCargo = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        BTN_Vercargos = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        jCheckBox1 = new javax.swing.JCheckBox();
+        jCheckBox2 = new javax.swing.JCheckBox();
         jScrollPane1 = new javax.swing.JScrollPane();
-        JTABLE_Mant_Cargo = new javax.swing.JTable();
+        JTABLE_Mant_cargos = new javax.swing.JTable();
         BTN_Nuevo = new javax.swing.JButton();
         BTN_Guardar = new javax.swing.JButton();
         BTN_Modificar = new javax.swing.JButton();
@@ -82,7 +69,7 @@ public class frm_cargo extends javax.swing.JFrame {
         BTN_EXCEL = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        TXT_BuscarCargo = new javax.swing.JTextField();
+        TXT_Buscarcargos = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         BTN_Cerrar1 = new javax.swing.JButton();
         BTN_PDF = new javax.swing.JButton();
@@ -90,21 +77,24 @@ public class frm_cargo extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel1.setText("MANTENIMIENTO DE CARGOS");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 0, 240, 30));
+        jPanel5.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 0, 240, 30));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder(new java.awt.Color(204, 0, 51), null));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel2.setText("Codigo Cargo");
+        jLabel2.setText("Codigo cargo");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, -1, -1));
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel3.setText("Nombre Cargo");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, -1, -1));
+        jLabel3.setText("Nombre cargo");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, -1, -1));
 
         txtcodigocargo.setEditable(false);
         txtcodigocargo.setBackground(new java.awt.Color(255, 255, 255));
@@ -112,7 +102,7 @@ public class frm_cargo extends javax.swing.JFrame {
         txtcodigocargo.setForeground(new java.awt.Color(0, 0, 204));
         txtcodigocargo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtcodigocargo.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel1.add(txtcodigocargo, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 20, 330, 30));
+        jPanel1.add(txtcodigocargo, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 20, 300, 30));
 
         txtnombrecargo.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         txtnombrecargo.setForeground(new java.awt.Color(0, 0, 204));
@@ -123,47 +113,66 @@ public class frm_cargo extends javax.swing.JFrame {
                 txtnombrecargoKeyTyped(evt);
             }
         });
-        jPanel1.add(txtnombrecargo, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 59, 330, 30));
+        jPanel1.add(txtnombrecargo, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 80, 300, 30));
 
-        BTN_VerCargo.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        BTN_VerCargo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/papel.png"))); // NOI18N
-        BTN_VerCargo.setText("VER CARGOS");
-        BTN_VerCargo.addActionListener(this::BTN_VerCargoActionPerformed);
-        jPanel1.add(BTN_VerCargo, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 20, 180, 50));
+        BTN_Vercargos.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        BTN_Vercargos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/papel.png"))); // NOI18N
+        BTN_Vercargos.setText("VER CARGOS");
+        BTN_Vercargos.addActionListener(this::BTN_VercargosActionPerformed);
+        jPanel1.add(BTN_Vercargos, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 40, 140, 50));
 
-        jTextField1.setEditable(false);
-        jTextField1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-30, -10, 850, 550));
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "acciones", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 12), new java.awt.Color(0, 51, 255))); // NOI18N
+        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 790, 120));
+        jCheckBox1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jCheckBox1.setText("Listar cargo de baja");
+        jCheckBox1.addActionListener(this::jCheckBox1ActionPerformed);
+        jPanel3.add(jCheckBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, -1, -1));
 
-        JTABLE_Mant_Cargo.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        JTABLE_Mant_Cargo.setForeground(new java.awt.Color(0, 0, 204));
-        JTABLE_Mant_Cargo.setModel(new javax.swing.table.DefaultTableModel(
+        jCheckBox2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jCheckBox2.setText("Reactivar cargo");
+        jCheckBox2.addActionListener(this::jCheckBox2ActionPerformed);
+        jPanel3.add(jCheckBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, -1, -1));
+
+        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 10, 190, 110));
+        jPanel3.getAccessibleContext().setAccessibleName("acciones");
+
+        jPanel5.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 820, 160));
+
+        JTABLE_Mant_cargos.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        JTABLE_Mant_cargos.setForeground(new java.awt.Color(0, 0, 204));
+        JTABLE_Mant_cargos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Title 1", "Title 2", "Title 3"
             }
         ));
-        JTABLE_Mant_Cargo.addMouseListener(new java.awt.event.MouseAdapter() {
+        JTABLE_Mant_cargos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                JTABLE_Mant_CargoMouseClicked(evt);
+                JTABLE_Mant_cargosMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(JTABLE_Mant_Cargo);
+        jScrollPane1.setViewportView(JTABLE_Mant_cargos);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 270, 810, 220));
+        jPanel5.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 330, 830, 220));
 
         BTN_Nuevo.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Nuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/registro.png"))); // NOI18N
         BTN_Nuevo.setText("NUEVO");
         BTN_Nuevo.addActionListener(this::BTN_NuevoActionPerformed);
-        getContentPane().add(BTN_Nuevo, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 160, 190, 50));
+        jPanel5.add(BTN_Nuevo, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 200, 190, 50));
 
         BTN_Guardar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Guardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/disco-flexible (1).png"))); // NOI18N
@@ -174,25 +183,25 @@ public class frm_cargo extends javax.swing.JFrame {
             }
         });
         BTN_Guardar.addActionListener(this::BTN_GuardarActionPerformed);
-        getContentPane().add(BTN_Guardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 160, 190, 50));
+        jPanel5.add(BTN_Guardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 200, 190, 50));
 
         BTN_Modificar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Modificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/ahorrar.png"))); // NOI18N
         BTN_Modificar.setText("MODIFICAR");
         BTN_Modificar.addActionListener(this::BTN_ModificarActionPerformed);
-        getContentPane().add(BTN_Modificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 160, 200, 50));
+        jPanel5.add(BTN_Modificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 200, 200, 50));
 
         BTN_Desactivar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Desactivar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/expediente.png"))); // NOI18N
         BTN_Desactivar.setText("DAR DE BAJA");
         BTN_Desactivar.addActionListener(this::BTN_DesactivarActionPerformed);
-        getContentPane().add(BTN_Desactivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 160, 180, 50));
+        jPanel5.add(BTN_Desactivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 200, 180, 50));
 
         BTN_EXCEL.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_EXCEL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/excel.png"))); // NOI18N
         BTN_EXCEL.setText("Exportar");
         BTN_EXCEL.addActionListener(this::BTN_EXCELActionPerformed);
-        getContentPane().add(BTN_EXCEL, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 500, 120, 40));
+        jPanel5.add(BTN_EXCEL, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 560, 120, 40));
 
         jPanel2.setBackground(new java.awt.Color(0, 0, 0));
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -200,83 +209,82 @@ public class frm_cargo extends javax.swing.JFrame {
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("Ingresar el Nombre del Cargo");
+        jLabel4.setText("Ingresar el Nombre de la Facultad");
         jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 10, -1, 30));
 
-        TXT_BuscarCargo.addKeyListener(new java.awt.event.KeyAdapter() {
+        TXT_Buscarcargos.addActionListener(this::TXT_BuscarcargosActionPerformed);
+        TXT_Buscarcargos.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                TXT_BuscarCargoKeyReleased(evt);
+                TXT_BuscarcargosKeyReleased(evt);
             }
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                TXT_BuscarCargoKeyTyped(evt);
+                TXT_BuscarcargosKeyTyped(evt);
             }
         });
-        jPanel2.add(TXT_BuscarCargo, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 10, 290, -1));
+        jPanel2.add(TXT_Buscarcargos, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 10, 290, -1));
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
         jLabel5.setText("BUSCAR");
-        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 10, 120, 30));
+        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 10, 120, 30));
 
-        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 220, 810, 50));
+        jPanel5.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 270, 830, 50));
 
         BTN_Cerrar1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Cerrar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/cerrado.png"))); // NOI18N
         BTN_Cerrar1.setText("Cerrar");
         BTN_Cerrar1.addActionListener(this::BTN_Cerrar1ActionPerformed);
-        getContentPane().add(BTN_Cerrar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 500, 130, 40));
+        jPanel5.add(BTN_Cerrar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 560, 130, 40));
 
         BTN_PDF.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/archivo-de-acrobat-reader.png"))); // NOI18N
         BTN_PDF.setText("Exportar");
         BTN_PDF.addActionListener(this::BTN_PDFActionPerformed);
-        getContentPane().add(BTN_PDF, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 500, 120, 40));
+        jPanel5.add(BTN_PDF, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 560, 120, 40));
+
+        getContentPane().add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 0, 900, 610));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void BTN_VercargosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_VercargosActionPerformed
+//llamar a la tabla mostrar cargos
+        this.mostrarCargos();
+    }//GEN-LAST:event_BTN_VercargosActionPerformed
+
     private void txtnombrecargoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtnombrecargoKeyTyped
-// Convierte automáticamente las letras a mayúsculas al escribir
-        char c = evt.getKeyChar();
-        if (Character.isLowerCase(c)) {
-            evt.setKeyChar(Character.toUpperCase(c));
-        }
+        // TODO add your handling code here:
     }//GEN-LAST:event_txtnombrecargoKeyTyped
 
-    private void BTN_VerCargoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_VerCargoActionPerformed
-this.mostrarCargos();
-        this.BTN_Guardar.setEnabled(false);
-        this.BTN_Desactivar.setEnabled(false);
-        this.BTN_Modificar.setEnabled(false);
-        txtcodigocargo.setText("");
-        txtnombrecargo.setText("");
-        txtnombrecargo.setEnabled(false);
-    }//GEN-LAST:event_BTN_VerCargoActionPerformed
-
-    private void JTABLE_Mant_CargoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JTABLE_Mant_CargoMouseClicked
-txtnombrecargo.setEnabled(true);
-        int filaseleccionada = JTABLE_Mant_Cargo.getSelectedRow();
-
-        if (filaseleccionada >= 0) {
-            String codigo = JTABLE_Mant_Cargo.getValueAt(filaseleccionada, 0).toString();
-            String nombre = JTABLE_Mant_Cargo.getValueAt(filaseleccionada, 1).toString();
+    private void JTABLE_Mant_cargosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JTABLE_Mant_cargosMouseClicked
+//obtener la fila seleccionada
+        int filaSeleccionada = JTABLE_Mant_cargos.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            //llenar los campos de texto con los datos de la fila
+            String codigo = JTABLE_Mant_cargos.getValueAt(filaSeleccionada, 0).toString();
+            String nombre = JTABLE_Mant_cargos.getValueAt(filaSeleccionada, 1).toString();
 
             txtcodigocargo.setText(codigo);
             txtnombrecargo.setText(nombre);
-
+            //Habilitar el campo para editar nombre
+            txtnombrecargo.setEnabled(true);
+            //Habilitar botones relacionados
             BTN_Modificar.setEnabled(true);
             BTN_Desactivar.setEnabled(true);
+            //opcional: Deshabilitar boton guardar (si es necesario)
             BTN_Guardar.setEnabled(false);
+
         }
-    }//GEN-LAST:event_JTABLE_Mant_CargoMouseClicked
+    }//GEN-LAST:event_JTABLE_Mant_cargosMouseClicked
 
     private void BTN_NuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_NuevoActionPerformed
-txtcodigocargo.setText("");
+//limpiar los campos de texto
+        txtcodigocargo.setText("");
         txtnombrecargo.setText("");
-
+//Da el foco al campo de nombre para que el usuarioempiece a escribir
         txtnombrecargo.requestFocus();
         txtnombrecargo.setEnabled(true);
-
+//Habilita el boton guardar(en caso estee deshabilitado)
         BTN_Guardar.setEnabled(true);
         BTN_Desactivar.setEnabled(false);
         BTN_Modificar.setEnabled(false);
@@ -287,138 +295,178 @@ txtcodigocargo.setText("");
     }//GEN-LAST:event_BTN_GuardarMouseClicked
 
     private void BTN_GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_GuardarActionPerformed
-String nombre = txtnombrecargo.getText().trim();
+// 1. Validar que el campo no esté vacío
+// 1. Validar que los campos no estén vacíos
+        String nombre = txtnombrecargo.getText().trim();
+        
 
-    if (nombre.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Ingrese el nombre del cargo", "Campo requerido", JOptionPane.WARNING_MESSAGE);
-        txtnombrecargo.requestFocus();
-        return;
-    }
-
-    int respuesta = JOptionPane.showConfirmDialog(this, "¿Desea guardar el registro del cargo?", "Confirmación", JOptionPane.YES_NO_OPTION);
-
-    if (respuesta == JOptionPane.YES_OPTION) {
-        try {
-            conexionBD.insertarCargo(nombre);
-            JOptionPane.showMessageDialog(this, "Cargo registrado correctamente", "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
-            
-            // Actualizar la lista en orden
-            this.mostrarCargos();
-
-            // Limpiar y deshabilitar controles
-            txtcodigocargo.setText("");
-            txtnombrecargo.setText("");
-            txtnombrecargo.setEnabled(false);
-            BTN_Guardar.setEnabled(false);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Error al registrar cargo:\n" + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-    }//GEN-LAST:event_BTN_GuardarActionPerformed
-
-    private void BTN_ModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_ModificarActionPerformed
-String codStr = txtcodigocargo.getText().trim();
-        String nuevoNombre = txtnombrecargo.getText().trim();
-
-        if (codStr.isEmpty() || nuevoNombre.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Seleccione un cargo y complete el nuevo nombre", "Campo requerido", JOptionPane.WARNING_MESSAGE);
+        if (nombre.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese el nombre del cargo",
+                    "Campo requerido", JOptionPane.WARNING_MESSAGE);
+            txtnombrecargo.requestFocus();
             return;
         }
-
-        int codigo = Integer.parseInt(codStr);
-
-        int respuesta = JOptionPane.showConfirmDialog(this, "¿Desea modificar este cargo?", "Confirmación", JOptionPane.YES_NO_OPTION);
+// 2. Confirmar si el usuario desea guardar
+        int respuesta = JOptionPane.showConfirmDialog(this,
+                "¿Desea guardar el registro de cargo?", "Confirmación", JOptionPane.YES_NO_OPTION);
 
         if (respuesta == JOptionPane.YES_OPTION) {
             try {
-                conexionBD.modificarCargo(codigo, nuevoNombre);
-                JOptionPane.showMessageDialog(this, "Cargo modificado correctamente", "Modificación exitosa", JOptionPane.INFORMATION_MESSAGE);
+                // 3. Llamar al método para insertar
+                conexionBD.insertarCargo(nombre);
 
+                // 4. Mostrar mensaje de éxito
+                JOptionPane.showMessageDialog(this, "cargo registrado correctamente",
+                        "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
+
+                // 5. Actualizar tabla y limpiar campos
                 this.mostrarCargos();
 
-                txtcodigocargo.setText("");
-                txtnombrecargo.setText("");
-                txtnombrecargo.setEnabled(false);
-                BTN_Desactivar.setEnabled(false);
-                BTN_Modificar.setEnabled(false);
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, "Error al modificar cargo:\n" + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error al registrar cargo:\n"
+                        + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
             }
         }
+    }//GEN-LAST:event_BTN_GuardarActionPerformed
+
+    private void BTN_ModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_ModificarActionPerformed
+      String codStr = txtcodigocargo.getText().trim();
+        String nuevoNombre = txtnombrecargo.getText().trim();
+        if (codStr.isEmpty() || nuevoNombre.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Seleccione un cargo y complete"
+                    + "el nuevo nombre", "campo requerido", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int codigo = Integer.parseInt(codStr);
+//confirmacion del usuario
+        int respuesta = JOptionPane.showConfirmDialog(this,
+                "¿Desea modifcar este cargo?", "confirmacion",
+                JOptionPane.YES_NO_OPTION);
+        if (respuesta == JOptionPane.YES_OPTION) {
+            try {
+                conexionBD.modificarCargo(codigo, nuevoNombre);
+                JOptionPane.showMessageDialog(this, "cargo modificada correctamente",
+                        "Modificacion exitosa", JOptionPane.INFORMATION_MESSAGE);
+                this.mostrarCargos();//metodo actualizar
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error al modificar cargo:\n"
+                        + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
     }//GEN-LAST:event_BTN_ModificarActionPerformed
 
     private void BTN_DesactivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_DesactivarActionPerformed
-String codStr = txtcodigocargo.getText().trim();
+// 1. Validar que se haya seleccionado una facultad
+        String codStr = txtcodigocargo.getText().trim();
         if (codStr.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Seleccione un cargo en la tabla para dar de baja.", "Campo requerido", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Seleccione un cargo en la tabla para desactivar.", "Campo requerido", JOptionPane.WARNING_MESSAGE);
             return;
         }
-
-        int codigo = Integer.parseInt(codStr);
-
-        int opcion = JOptionPane.showConfirmDialog(this, "¿Está seguro de que desea dar de baja este cargo?", "Confirmar acción", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-
+        int codigo = Integer.parseInt(codStr); // Convertir a entero
+        // 2. Confirmar la acción con el usuario
+        int opcion = JOptionPane.showConfirmDialog(this, "¿Está seguro de que desea desactivar este proveedor?", "Confirmar desactivación", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (opcion == JOptionPane.YES_OPTION) {
             try {
-                conexionBD.desactivarCargo(codigo);
-                JOptionPane.showMessageDialog(this, "Cargo dado de baja correctamente.", "Operación exitosa", JOptionPane.INFORMATION_MESSAGE);
-
+                // 3. Llamar al método que ejecuta el procedure de desactivación
+                conexionBD.darDeBajaCargo(codigo);
+                // 4. Mostrar mensaje de éxito
+                JOptionPane.showMessageDialog(this, "cargo desactivado correctamente.", "Operación exitosa", JOptionPane.INFORMATION_MESSAGE);
+                // 5. Actualizar tabla y limpiar campos
                 this.mostrarCargos();
-
+                // Limpia los campos de texto
                 txtcodigocargo.setText("");
                 txtnombrecargo.setText("");
-                txtnombrecargo.setEnabled(false);
                 BTN_Desactivar.setEnabled(false);
                 BTN_Modificar.setEnabled(false);
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, "Error al dar de baja el cargo:\n" + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
+                // 6. Captura cualquier error lanzado por el procedure (por SIGNAL)
+                JOptionPane.showMessageDialog(this, "Error al desactivar cargo:\n" + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_BTN_DesactivarActionPerformed
 
     private void BTN_EXCELActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_EXCELActionPerformed
-JOptionPane.showMessageDialog(this, "Función Exportar Excel disponible.", "Información", JOptionPane.INFORMATION_MESSAGE);
+
     }//GEN-LAST:event_BTN_EXCELActionPerformed
 
-    private void TXT_BuscarCargoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXT_BuscarCargoKeyReleased
-modeloTablaCargo.setRowCount(0);
-        String nombre = TXT_BuscarCargo.getText().trim();
+    private void TXT_BuscarcargosKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXT_BuscarcargosKeyReleased
+        this.buscarcargo();
+    }//GEN-LAST:event_TXT_BuscarcargosKeyReleased
 
-        try {
-            ResultSet rs = conexionBD.buscarCargos(nombre);
+    private void TXT_BuscarcargosKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXT_BuscarcargosKeyTyped
 
-            while (rs != null && rs.next()) {
-                Object[] fila = {
-                    rs.getInt("id_cargo"),
-                    rs.getString("nombre_cargo")
-                };
-                modeloTablaCargo.addRow(fila);
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error al buscar cargos:\n" + e.getMessage(), "Error de búsqueda", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_TXT_BuscarCargoKeyReleased
-
-    private void TXT_BuscarCargoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXT_BuscarCargoKeyTyped
-
-    }//GEN-LAST:event_TXT_BuscarCargoKeyTyped
+    }//GEN-LAST:event_TXT_BuscarcargosKeyTyped
 
     private void BTN_Cerrar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_Cerrar1ActionPerformed
-int confirmacion = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que deseas cerrar el formulario?", "Confirmar salida", JOptionPane.YES_NO_OPTION);
+int confirmacion = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que deseas cerrar el formulario?", "Confirmar salida",
+                JOptionPane.YES_NO_OPTION);
         if (confirmacion == JOptionPane.YES_OPTION) {
             try {
+                // Cerrar conexión si tienes un método cerrarConexion()
                 conexionBD.cerrarConexion();
             } catch (Exception e) {
                 System.err.println("Error al cerrar la conexión: " + e.getMessage());
             }
-            dispose();
+            // Cierra el formulario actual
+            dispose(); // o this.dispose() si estás dentro del formulario
         }
     }//GEN-LAST:event_BTN_Cerrar1ActionPerformed
 
     private void BTN_PDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_PDFActionPerformed
-JOptionPane.showMessageDialog(this, "Función Exportar PDF disponible.", "Información", JOptionPane.INFORMATION_MESSAGE);
-    
+
     }//GEN-LAST:event_BTN_PDFActionPerformed
+
+    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+if (jCheckBox1.isSelected()) {
+            mostrarCargosDeBaja();
+        } else {
+            mostrarCargos();
+        }
+    }//GEN-LAST:event_jCheckBox1ActionPerformed
+
+    private void TXT_BuscarcargosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TXT_BuscarcargosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TXT_BuscarcargosActionPerformed
+
+    private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox2ActionPerformed
+        if (jCheckBox2.isSelected()) {
+            String codStr = txtcodigocargo.getText().trim();
+            
+            if (codStr.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Seleccione un cargo de baja de la tabla para reactivar.", "Atención", JOptionPane.WARNING_MESSAGE);
+                jCheckBox2.setSelected(false);
+                return;
+            }
+            
+            int codigo = Integer.parseInt(codStr);
+            int respuesta = JOptionPane.showConfirmDialog(this, "¿Desea reactivar este cargo?", "Confirmación", JOptionPane.YES_NO_OPTION);
+            
+            if (respuesta == JOptionPane.YES_OPTION) {
+                try {
+                    conexionBD.reactivarCargo(codigo); 
+                    
+                    JOptionPane.showMessageDialog(this, "¡Cargo reactivado correctamente!", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    
+                    txtcodigocargo.setText("");
+                    txtnombrecargo.setText("");
+                    jCheckBox2.setSelected(false);
+                    
+                    if (jCheckBox1.isSelected()) {
+                        mostrarCargosDeBaja();
+                    } else {
+                        mostrarCargos();
+                    }
+                    
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(this, "Error al reactivar:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    jCheckBox2.setSelected(false);
+                }
+            } else {
+                jCheckBox2.setSelected(false);
+            }
+        }
+    }//GEN-LAST:event_jCheckBox2ActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -450,9 +498,11 @@ JOptionPane.showMessageDialog(this, "Función Exportar PDF disponible.", "Inform
     private javax.swing.JButton BTN_Modificar;
     private javax.swing.JButton BTN_Nuevo;
     private javax.swing.JButton BTN_PDF;
-    private javax.swing.JButton BTN_VerCargo;
-    private javax.swing.JTable JTABLE_Mant_Cargo;
-    private javax.swing.JTextField TXT_BuscarCargo;
+    private javax.swing.JButton BTN_Vercargos;
+    private javax.swing.JTable JTABLE_Mant_cargos;
+    private javax.swing.JTextField TXT_Buscarcargos;
+    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -460,9 +510,84 @@ JOptionPane.showMessageDialog(this, "Función Exportar PDF disponible.", "Inform
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField txtcodigocargo;
     private javax.swing.JTextField txtnombrecargo;
     // End of variables declaration//GEN-END:variables
+
+    public void mostrarCargos() {
+        txtnombrecargo.setEnabled(true);//desactivar y activar nombreCargo
+        //ordenar Asc, Desc
+        JTABLE_Mant_cargos.setAutoCreateRowSorter(true);
+        //limpiar la tabla antes de mostar nuevos datos
+        modeloTablaCargo.setRowCount(0);
+        try {
+            //llama al metodo que devuelve los datos a la facultad
+            ResultSet rs = conexionBD.listarCargo();
+            //recorre cada fila del resultado y agrega a la tabla
+            while (rs.next()) {
+                Object[] fila = {
+                    rs.getInt("id_cargo"),
+                    rs.getString("nombre_cargo"),
+                    rs.getString("estado_cargo")};
+                modeloTablaCargo.addRow(fila);
+            }
+        } catch (SQLException e) {
+            //muestra mensaje si ocurre un error en la consulta
+            JOptionPane.showMessageDialog(this, "Error al mostrar cargo:\n" + e.getMessage(),
+                    "Error de consulta", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void buscarcargo() {
+        // Limpia la tabla antes de mostrar los resultados filtrados
+        modeloTablaCargo.setRowCount(0);
+        // obtiene el texto ingresado por el usuario
+        String busqueda = TXT_Buscarcargos.getText().trim();
+        try {
+            // Consulta los datos usando el procedimiento almacenado en la BD
+            ResultSet rs = conexionBD.buscarCargo(busqueda);
+
+            // Recorre los resultados y los anade a la tablal
+            while (rs.next()) {
+                Object[] fila = {
+                    rs.getInt("id_cargo"),
+                    rs.getString("nombre_cargo"),};
+                modeloTablaCargo.addRow(fila);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al buscar Cargos: \n" + e.getMessage(),
+                    "Error de busqueda", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    
+    /* Método para listar los cargos de baja en la tabla */
+    public void mostrarCargosDeBaja() {
+        JTABLE_Mant_cargos.setAutoCreateRowSorter(true);
+        modeloTablaCargo.setRowCount(0);
+        try {
+            ResultSet rs = conexionBD.listarCargosDeBaja(); 
+            while (rs.next()) {
+                Object[] fila = {
+                    rs.getInt("id_cargo"),
+                    rs.getString("nombre_cargo"),
+                    rs.getString("estado_cargo")
+                };
+                modeloTablaCargo.addRow(fila);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al mostrar cargos de baja:\n" + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    
+    
+    
+    
+    
 }

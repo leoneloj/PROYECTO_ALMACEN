@@ -13,55 +13,32 @@ public class frm_Empresa extends javax.swing.JFrame {
     /* Objeto de conexión a la base de datos */
     conexionBD conexionBD;
 
-    /**
-     * Creates new form frm_Empresa
-     */
     public frm_Empresa() {
         initComponents();
-        this.setLocationRelativeTo(null); // Centra la ventana en la pantalla
-
-        /* Deshabilitar campos y botones al iniciar */
         txtcodigoempresa.setEnabled(false);
-        txtnombreempresa.setEnabled(false);
         BTN_Guardar.setEnabled(false);
         BTN_Modificar.setEnabled(false);
-        BTN_Desactivar.setEnabled(false);
-
-        /* Crear la conexión al iniciar el formulario */
+        // Crear la conexión al iniciar el formulario
         conexionBD = new conexionBD();
 
-        /* Verificar que la conexión fue exitosa */
+        // Verificar que la conexión fue exitosa
         if (conexionBD.getConnection() == null) {
             JOptionPane.showMessageDialog(this, "No se pudo conectar con la base de datos.",
                     "Error de conexión", JOptionPane.ERROR_MESSAGE);
+            return; // Evita continuar si no hay conexión
         }
 
-        /* Definir los encabezados de la tabla */
-        String titulos[] = {"Código Empresa", "Nombre Empresa"};
+        // Definir los encabezados de la tabla
+        String titulos[] = {"Codigo empresa", "Razon social", "Ruc", "Telefono", "Correo"};
+
+        // Asignar los títulos al modelo
         modeloTablaEmpresa.setColumnIdentifiers(titulos);
+
+        // Establecer el modelo a la JTable
         JTABLE_Mant_Empresa.setModel(modeloTablaEmpresa);
-    }
 
-    /**
-     * Método para listar/refrescar los datos en el JTable desde la BD
-     */
-    public void mostrarEmpresas() {
-        JTABLE_Mant_Empresa.setAutoCreateRowSorter(true);
-        modeloTablaEmpresa.setRowCount(0); // Limpia la tabla antes de cargar datos
-        try {
-            ResultSet rs = conexionBD.listarEmpresas();
-
-            while (rs != null && rs.next()) {
-                Object[] fila = {
-                    rs.getInt("id_empresa"),
-                    rs.getString("razon_social")
-                };
-                modeloTablaEmpresa.addRow(fila);
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al mostrar empresas:\n" + e.getMessage(),
-                    "Error de consulta", JOptionPane.ERROR_MESSAGE);
-        }
+        // Deshabilitar campo de código (solo lo mostrará, no se escribe)
+        txtcodigoempresa.setEnabled(false);
     }
 
     /**
@@ -73,46 +50,54 @@ public class frm_Empresa extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel5 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         txtcodigoempresa = new javax.swing.JTextField();
-        txtnombreempresa = new javax.swing.JTextField();
-        BTN_VerEmpresa = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        BTN_VerEmpresas = new javax.swing.JButton();
+        txtrazonsocial = new javax.swing.JTextField();
+        txtcorreoempresa = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        txtrucempresa = new javax.swing.JTextField();
+        txttelefonoempresa = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         JTABLE_Mant_Empresa = new javax.swing.JTable();
         BTN_Nuevo = new javax.swing.JButton();
         BTN_Guardar = new javax.swing.JButton();
         BTN_Modificar = new javax.swing.JButton();
-        BTN_Desactivar = new javax.swing.JButton();
         BTN_EXCEL = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        TXT_BuscarEmpresa = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
+        TXT_Buscarempresa = new javax.swing.JTextField();
         BTN_Cerrar1 = new javax.swing.JButton();
-        BTN_PDF = new javax.swing.JButton();
+        BTN_EXCEL1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel1.setText("MANTENIMIENTO DE EMPRESA");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 0, 240, 30));
+        jPanel5.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 0, 240, 30));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder(new java.awt.Color(204, 0, 51), null));
+        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder(new java.awt.Color(0, 0, 0), null));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel2.setText("Codigo Empresa");
+        jLabel2.setText("Codigo empresa");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, -1, -1));
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel3.setText("Nombre Empresa");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, -1, -1));
+        jLabel3.setText("Correo");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 80, -1, -1));
 
         txtcodigoempresa.setEditable(false);
         txtcodigoempresa.setBackground(new java.awt.Color(255, 255, 255));
@@ -120,42 +105,90 @@ public class frm_Empresa extends javax.swing.JFrame {
         txtcodigoempresa.setForeground(new java.awt.Color(0, 0, 204));
         txtcodigoempresa.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtcodigoempresa.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel1.add(txtcodigoempresa, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 20, 330, 30));
+        jPanel1.add(txtcodigoempresa, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 20, 290, 30));
 
-        txtnombreempresa.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        txtnombreempresa.setForeground(new java.awt.Color(0, 0, 204));
-        txtnombreempresa.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtnombreempresa.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        txtnombreempresa.addKeyListener(new java.awt.event.KeyAdapter() {
+        BTN_VerEmpresas.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        BTN_VerEmpresas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/papel.png"))); // NOI18N
+        BTN_VerEmpresas.setText("VER EMPRESAS");
+        BTN_VerEmpresas.addActionListener(this::BTN_VerEmpresasActionPerformed);
+        jPanel1.add(BTN_VerEmpresas, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 100, 180, 50));
+
+        txtrazonsocial.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtrazonsocial.setForeground(new java.awt.Color(0, 0, 204));
+        txtrazonsocial.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtrazonsocial.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        txtrazonsocial.addActionListener(this::txtrazonsocialActionPerformed);
+        txtrazonsocial.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtnombreempresaKeyTyped(evt);
+                txtrazonsocialKeyTyped(evt);
             }
         });
-        jPanel1.add(txtnombreempresa, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 59, 330, 30));
+        jPanel1.add(txtrazonsocial, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 70, 290, 30));
 
-        BTN_VerEmpresa.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        BTN_VerEmpresa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/papel.png"))); // NOI18N
-        BTN_VerEmpresa.setText("VER EMPRESA");
-        BTN_VerEmpresa.addActionListener(this::BTN_VerEmpresaActionPerformed);
-        jPanel1.add(BTN_VerEmpresa, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 20, 180, 50));
+        txtcorreoempresa.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtcorreoempresa.setForeground(new java.awt.Color(0, 0, 204));
+        txtcorreoempresa.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtcorreoempresa.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        txtcorreoempresa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtcorreoempresaKeyTyped(evt);
+            }
+        });
+        jPanel1.add(txtcorreoempresa, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 60, 290, 30));
 
-        jTextField1.setEditable(false);
-        jTextField1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -10, 820, 550));
+        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel7.setText("Razon social");
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, -1, -1));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 790, 120));
+        txtrucempresa.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtrucempresa.setForeground(new java.awt.Color(0, 0, 204));
+        txtrucempresa.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtrucempresa.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        txtrucempresa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtrucempresaKeyTyped(evt);
+            }
+        });
+        jPanel1.add(txtrucempresa, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 110, 290, 30));
+
+        txttelefonoempresa.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txttelefonoempresa.setForeground(new java.awt.Color(0, 0, 204));
+        txttelefonoempresa.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txttelefonoempresa.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        txttelefonoempresa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txttelefonoempresaKeyTyped(evt);
+            }
+        });
+        jPanel1.add(txttelefonoempresa, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 20, 290, 30));
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel6.setText("Ruc");
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 124, -1, 10));
+
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel8.setText("Telefono");
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 30, -1, -1));
+
+        jPanel5.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 960, 160));
 
         JTABLE_Mant_Empresa.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         JTABLE_Mant_Empresa.setForeground(new java.awt.Color(0, 0, 204));
         JTABLE_Mant_Empresa.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Title 1", "Title 2", "Title 3", "Title 4", "Title 5"
             }
         ));
         JTABLE_Mant_Empresa.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -165,13 +198,13 @@ public class frm_Empresa extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(JTABLE_Mant_Empresa);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 270, 810, 220));
+        jPanel5.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 330, 970, 220));
 
         BTN_Nuevo.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Nuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/registro.png"))); // NOI18N
         BTN_Nuevo.setText("NUEVO");
         BTN_Nuevo.addActionListener(this::BTN_NuevoActionPerformed);
-        getContentPane().add(BTN_Nuevo, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 160, 190, 50));
+        jPanel5.add(BTN_Nuevo, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 210, 190, 50));
 
         BTN_Guardar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Guardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/disco-flexible (1).png"))); // NOI18N
@@ -182,25 +215,19 @@ public class frm_Empresa extends javax.swing.JFrame {
             }
         });
         BTN_Guardar.addActionListener(this::BTN_GuardarActionPerformed);
-        getContentPane().add(BTN_Guardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 160, 190, 50));
+        jPanel5.add(BTN_Guardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 210, 190, 50));
 
         BTN_Modificar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Modificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/ahorrar.png"))); // NOI18N
         BTN_Modificar.setText("MODIFICAR");
         BTN_Modificar.addActionListener(this::BTN_ModificarActionPerformed);
-        getContentPane().add(BTN_Modificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 160, 200, 50));
-
-        BTN_Desactivar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        BTN_Desactivar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/expediente.png"))); // NOI18N
-        BTN_Desactivar.setText("DAR DE BAJA");
-        BTN_Desactivar.addActionListener(this::BTN_DesactivarActionPerformed);
-        getContentPane().add(BTN_Desactivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 160, 180, 50));
+        jPanel5.add(BTN_Modificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 210, 200, 50));
 
         BTN_EXCEL.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        BTN_EXCEL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/excel.png"))); // NOI18N
+        BTN_EXCEL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/archivo-de-acrobat-reader.png"))); // NOI18N
         BTN_EXCEL.setText("Exportar");
         BTN_EXCEL.addActionListener(this::BTN_EXCELActionPerformed);
-        getContentPane().add(BTN_EXCEL, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 500, 120, 40));
+        jPanel5.add(BTN_EXCEL, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 560, 120, 40));
 
         jPanel2.setBackground(new java.awt.Color(0, 0, 0));
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -208,85 +235,98 @@ public class frm_Empresa extends javax.swing.JFrame {
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("Ingresar el Nombre de la Empresa");
+        jLabel4.setText("Ingresar el Nombre de la Facultad");
         jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 10, -1, 30));
-
-        TXT_BuscarEmpresa.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                TXT_BuscarEmpresaKeyReleased(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                TXT_BuscarEmpresaKeyTyped(evt);
-            }
-        });
-        jPanel2.add(TXT_BuscarEmpresa, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 10, 290, -1));
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
         jLabel5.setText("BUSCAR");
-        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 10, 120, 30));
+        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 10, 120, 30));
 
-        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 220, 810, 50));
+        TXT_Buscarempresa.addActionListener(this::TXT_BuscarempresaActionPerformed);
+        TXT_Buscarempresa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                TXT_BuscarempresaKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                TXT_BuscarempresaKeyTyped(evt);
+            }
+        });
+        jPanel2.add(TXT_Buscarempresa, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 10, 440, -1));
+
+        jPanel5.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 270, 970, 50));
 
         BTN_Cerrar1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Cerrar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/cerrado.png"))); // NOI18N
         BTN_Cerrar1.setText("Cerrar");
         BTN_Cerrar1.addActionListener(this::BTN_Cerrar1ActionPerformed);
-        getContentPane().add(BTN_Cerrar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 500, 130, 40));
+        jPanel5.add(BTN_Cerrar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 560, 130, 40));
 
-        BTN_PDF.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/archivo-de-acrobat-reader.png"))); // NOI18N
-        BTN_PDF.setText("Exportar");
-        BTN_PDF.addActionListener(this::BTN_PDFActionPerformed);
-        getContentPane().add(BTN_PDF, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 500, 120, 40));
+        BTN_EXCEL1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        BTN_EXCEL1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/excel.png"))); // NOI18N
+        BTN_EXCEL1.setText("Exportar");
+        BTN_EXCEL1.addActionListener(this::BTN_EXCEL1ActionPerformed);
+        jPanel5.add(BTN_EXCEL1, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 560, 120, 40));
+
+        getContentPane().add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 1020, 610));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtnombreempresaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtnombreempresaKeyTyped
-// Convierte automáticamente las letras a mayúsculas
-        char c = evt.getKeyChar();
-        if (Character.isLowerCase(c)) {
-            evt.setKeyChar(Character.toUpperCase(c));
-        }
-    }//GEN-LAST:event_txtnombreempresaKeyTyped
+    private void BTN_VerEmpresasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_VerEmpresasActionPerformed
+        //llama  a la tabla mostrar cliente
+        this.MostrarEmpresas();
+    }//GEN-LAST:event_BTN_VerEmpresasActionPerformed
 
-    private void BTN_VerEmpresaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_VerEmpresaActionPerformed
-        this.mostrarEmpresas();
-        this.BTN_Guardar.setEnabled(false);
-        this.BTN_Desactivar.setEnabled(false);
-        this.BTN_Modificar.setEnabled(false);
-        txtcodigoempresa.setText("");
-        txtnombreempresa.setText("");
-        txtnombreempresa.setEnabled(false);
-    }//GEN-LAST:event_BTN_VerEmpresaActionPerformed
+    private void txtrazonsocialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtrazonsocialActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtrazonsocialActionPerformed
+
+    private void txtrazonsocialKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtrazonsocialKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtrazonsocialKeyTyped
+
+    private void txtcorreoempresaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtcorreoempresaKeyTyped
+
+    }//GEN-LAST:event_txtcorreoempresaKeyTyped
 
     private void JTABLE_Mant_EmpresaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JTABLE_Mant_EmpresaMouseClicked
-        txtnombreempresa.setEnabled(true);
-        int filaseleccionada = JTABLE_Mant_Empresa.getSelectedRow();
+       int filaSeleccionada = JTABLE_Mant_Empresa.getSelectedRow();
+    if (filaSeleccionada >= 0) {
+        // Obtenemos los valores respetando el orden exacto de las columnas de la tabla:
+        // 0: Código, 1: Razón Social, 2: Ruc, 3: Teléfono, 4: Correo
+        String codigo = JTABLE_Mant_Empresa.getValueAt(filaSeleccionada, 0).toString();
+        String razonSocial = JTABLE_Mant_Empresa.getValueAt(filaSeleccionada, 1).toString();
+        String ruc = JTABLE_Mant_Empresa.getValueAt(filaSeleccionada, 2).toString();
+        String telefono = JTABLE_Mant_Empresa.getValueAt(filaSeleccionada, 3).toString();
+        String correo = JTABLE_Mant_Empresa.getValueAt(filaSeleccionada, 4).toString();
 
-        if (filaseleccionada >= 0) {
-            String codigo = JTABLE_Mant_Empresa.getValueAt(filaseleccionada, 0).toString();
-            String nombre = JTABLE_Mant_Empresa.getValueAt(filaseleccionada, 1).toString();
-
-            txtcodigoempresa.setText(codigo);
-            txtnombreempresa.setText(nombre);
-
-            BTN_Modificar.setEnabled(true);
-            BTN_Desactivar.setEnabled(true);
-            BTN_Guardar.setEnabled(false);
-        }
+        // Asignamos cada valor a su respectiva caja de texto correcta
+        txtcodigoempresa.setText(codigo);
+        txtrazonsocial.setText(razonSocial);
+        txtrucempresa.setText(ruc);          // <--- Aquí faltaba llenar el RUC
+        txttelefonoempresa.setText(telefono); // <--- Aquí va el teléfono correcto
+        txtcorreoempresa.setText(correo);     // <--- Aquí va el correo correcto
+        
+        txtrazonsocial.setEnabled(true);
+        BTN_Modificar.setEnabled(true);
+        BTN_Guardar.setEnabled(false);
+    }
     }//GEN-LAST:event_JTABLE_Mant_EmpresaMouseClicked
 
     private void BTN_NuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_NuevoActionPerformed
+        //limpiar los campos de texto
         txtcodigoempresa.setText("");
-        txtnombreempresa.setText("");
-
-        txtnombreempresa.requestFocus();
-        txtnombreempresa.setEnabled(true);
-
+        txtrazonsocial.setText("");
+        txtrucempresa.setText("");
+        txttelefonoempresa.setText("");
+        txtcorreoempresa.setText("");
+        //Da el foco al campo de nombre para que el usuario empiece a escribir
+        txtrazonsocial.requestFocus();
+        txtrazonsocial.setEnabled(true);
+        //Habilita el boton guardar(en caso estee deshabilitado)
         BTN_Guardar.setEnabled(true);
-        BTN_Desactivar.setEnabled(false);
         BTN_Modificar.setEnabled(false);
     }//GEN-LAST:event_BTN_NuevoActionPerformed
 
@@ -295,134 +335,135 @@ public class frm_Empresa extends javax.swing.JFrame {
     }//GEN-LAST:event_BTN_GuardarMouseClicked
 
     private void BTN_GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_GuardarActionPerformed
-        String nombre = txtnombreempresa.getText().trim();
+   String razonSocial = txtrazonsocial.getText().trim();
+        String ruc = txtrucempresa.getText().trim();
+        String telefono = txttelefonoempresa.getText().trim();
+        String correo = txtcorreoempresa.getText().trim();
 
-        if (nombre.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Ingrese el nombre de la empresa", "Campo requerido", JOptionPane.WARNING_MESSAGE);
-            txtnombreempresa.requestFocus();
-            return;
-        }
+        if (razonSocial.isEmpty() || ruc.isEmpty() || telefono.isEmpty() || correo.isEmpty()) {
+    JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos de la Empresa",
+            "Campo requerido", JOptionPane.WARNING_MESSAGE);
+    txtrazonsocial.requestFocus();
+    return;
+}
 
-        int respuesta = JOptionPane.showConfirmDialog(this, "¿Desea guardar el registro de la empresa?", "Confirmación", JOptionPane.YES_NO_OPTION);
+        int respuesta = JOptionPane.showConfirmDialog(this,
+                "¿Desea guardar el registro de la Empresa?", "Confirmación", JOptionPane.YES_NO_OPTION);
 
         if (respuesta == JOptionPane.YES_OPTION) {
             try {
-                conexionBD.insertarEmpresa(nombre);
-                JOptionPane.showMessageDialog(this, "Empresa registrada correctamente", "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
-                this.mostrarEmpresas();
+                conexionBD.insertarEmpresa(razonSocial, ruc, telefono, correo);
 
+                JOptionPane.showMessageDialog(this, "Empresa registrada correctamente",
+                        "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
+
+                this.MostrarEmpresas();
+                
+                // Limpiar campos después de guardar
                 txtcodigoempresa.setText("");
-                txtnombreempresa.setText("");
-                txtnombreempresa.setEnabled(false);
+                txtrazonsocial.setText("");
+                txtrucempresa.setText("");
+                txttelefonoempresa.setText("");
+                txtcorreoempresa.setText("");
                 BTN_Guardar.setEnabled(false);
+
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, "Error al registrar empresa:\n" + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error al registrar Empresa:\n"
+                        + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_BTN_GuardarActionPerformed
 
     private void BTN_ModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_ModificarActionPerformed
-        String codStr = txtcodigoempresa.getText().trim();
-        String nuevoNombre = txtnombreempresa.getText().trim();
+// 1. Obtener los valores de los campos de texto
+    String codStr = txtcodigoempresa.getText().trim();
+    String razonSocial = txtrazonsocial.getText().trim();
+    String ruc = txtrucempresa.getText().trim();
+    String telefono = txttelefonoempresa.getText().trim();
+    String correo = txtcorreoempresa.getText().trim();
+    
+    // 2. Validar que se haya seleccionado una empresa y que los campos principales no estén vacíos
+    if (codStr.isEmpty() || razonSocial.isEmpty() || ruc.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Seleccione una empresa de la tabla y complete la Razón Social y el RUC", 
+                "Campo requerido", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+    
+    int codigo = Integer.parseInt(codStr);
+    
+    // 3. Confirmación del usuario
+    int respuesta = JOptionPane.showConfirmDialog(this,
+            "¿Desea modificar esta empresa?", "Confirmación",
+            JOptionPane.YES_NO_OPTION);
+            
+    if (respuesta == JOptionPane.YES_OPTION) {
+        try {
+            // 4. Llamar al método de conexión para actualizar en la base de datos
+            conexionBD.modificarEmpresa(codigo, razonSocial, ruc, telefono, correo);
+            
+            // 5. Mensaje de éxito y actualización de la tabla
+            JOptionPane.showMessageDialog(this, "Empresa modificada correctamente",
+                    "Modificación exitosa", JOptionPane.INFORMATION_MESSAGE);
+            
+            this.MostrarEmpresas(); // Método para actualizar la tabla
+            
+            // Limpiar campos y bloquear el botón después de modificar
+            txtcodigoempresa.setText("");
+            txtrazonsocial.setText("");
+            txtrucempresa.setText("");
+            txttelefonoempresa.setText("");
+            txtcorreoempresa.setText("");
+            BTN_Modificar.setEnabled(false);
 
-        if (codStr.isEmpty() || nuevoNombre.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Seleccione una empresa y complete el nuevo nombre", "Campo requerido", JOptionPane.WARNING_MESSAGE);
-            return;
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error al modificar empresa:\n"
+                    + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
         }
-
-        int codigo = Integer.parseInt(codStr);
-
-        int respuesta = JOptionPane.showConfirmDialog(this, "¿Desea modificar esta empresa?", "Confirmación", JOptionPane.YES_NO_OPTION);
-
-        if (respuesta == JOptionPane.YES_OPTION) {
-            try {
-                conexionBD.modificarEmpresa(codigo, nuevoNombre);
-                JOptionPane.showMessageDialog(this, "Empresa modificada correctamente", "Modificación exitosa", JOptionPane.INFORMATION_MESSAGE);
-
-                this.mostrarEmpresas();
-
-                txtcodigoempresa.setText("");
-                txtnombreempresa.setText("");
-                txtnombreempresa.setEnabled(false);
-                BTN_Desactivar.setEnabled(false);
-                BTN_Modificar.setEnabled(false);
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, "Error al modificar empresa:\n" + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
-            }
-        }
+    }        
     }//GEN-LAST:event_BTN_ModificarActionPerformed
 
-    private void BTN_DesactivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_DesactivarActionPerformed
-        String codStr = txtcodigoempresa.getText().trim();
-        if (codStr.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Seleccione una empresa en la tabla para desactivar.", "Campo requerido", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        int codigo = Integer.parseInt(codStr);
-
-        int opcion = JOptionPane.showConfirmDialog(this, "¿Está seguro de que desea desactivar esta empresa?", "Confirmar desactivación", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-
-        if (opcion == JOptionPane.YES_OPTION) {
-            try {
-                conexionBD.desactivarEmpresa(codigo);
-                JOptionPane.showMessageDialog(this, "Empresa desactivada correctamente.", "Operación exitosa", JOptionPane.INFORMATION_MESSAGE);
-
-                this.mostrarEmpresas();
-
-                txtcodigoempresa.setText("");
-                txtnombreempresa.setText("");
-                txtnombreempresa.setEnabled(false);
-                BTN_Desactivar.setEnabled(false);
-                BTN_Modificar.setEnabled(false);
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, "Error al desactivar empresa:\n" + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }//GEN-LAST:event_BTN_DesactivarActionPerformed
-
     private void BTN_EXCELActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_EXCELActionPerformed
-        JOptionPane.showMessageDialog(this, "Función Exportar Excel disponible.", "Información", JOptionPane.INFORMATION_MESSAGE);
+
     }//GEN-LAST:event_BTN_EXCELActionPerformed
 
-    private void TXT_BuscarEmpresaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXT_BuscarEmpresaKeyReleased
-modeloTablaEmpresa.setRowCount(0);
-        String nombre = TXT_BuscarEmpresa.getText().trim();
+    private void TXT_BuscarempresaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TXT_BuscarempresaActionPerformed
 
-        try {
-            ResultSet rs = conexionBD.buscarEmpresas(nombre);
+    }//GEN-LAST:event_TXT_BuscarempresaActionPerformed
 
-            while (rs != null && rs.next()) {
-                Object[] fila = {
-                    rs.getInt("id_empresa"),
-                    rs.getString("razon_social")
-                };
-                modeloTablaEmpresa.addRow(fila);
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error al buscar empresas:\n" + e.getMessage(), "Error de búsqueda", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_TXT_BuscarEmpresaKeyReleased
+    private void TXT_BuscarempresaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXT_BuscarempresaKeyReleased
+        this.buscarEmpresas();
+    }//GEN-LAST:event_TXT_BuscarempresaKeyReleased
 
-    private void TXT_BuscarEmpresaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXT_BuscarEmpresaKeyTyped
+    private void TXT_BuscarempresaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXT_BuscarempresaKeyTyped
 
-    }//GEN-LAST:event_TXT_BuscarEmpresaKeyTyped
+    }//GEN-LAST:event_TXT_BuscarempresaKeyTyped
 
     private void BTN_Cerrar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_Cerrar1ActionPerformed
-int confirmacion = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que deseas cerrar el formulario?", "Confirmar salida", JOptionPane.YES_NO_OPTION);
+        int confirmacion = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que deseas cerrar el formulario?", "Confirmar salida",
+                JOptionPane.YES_NO_OPTION);
         if (confirmacion == JOptionPane.YES_OPTION) {
             try {
+                // Cerrar conexión si tienes un método cerrarConexion()
                 conexionBD.cerrarConexion();
             } catch (Exception e) {
                 System.err.println("Error al cerrar la conexión: " + e.getMessage());
             }
-            dispose();
+            // Cierra el formulario actual
+            dispose(); // o this.dispose() si estás dentro del formulario
         }
     }//GEN-LAST:event_BTN_Cerrar1ActionPerformed
 
-    private void BTN_PDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_PDFActionPerformed
-JOptionPane.showMessageDialog(this, "Función Exportar PDF disponible.", "Información", JOptionPane.INFORMATION_MESSAGE);
-    }//GEN-LAST:event_BTN_PDFActionPerformed
+    private void BTN_EXCEL1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_EXCEL1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BTN_EXCEL1ActionPerformed
+
+    private void txtrucempresaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtrucempresaKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtrucempresaKeyTyped
+
+    private void txttelefonoempresaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txttelefonoempresaKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txttelefonoempresaKeyTyped
 
     /**
      * @param args the command line arguments
@@ -451,25 +492,72 @@ JOptionPane.showMessageDialog(this, "Función Exportar PDF disponible.", "Inform
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BTN_Cerrar1;
-    private javax.swing.JButton BTN_Desactivar;
     private javax.swing.JButton BTN_EXCEL;
+    private javax.swing.JButton BTN_EXCEL1;
     private javax.swing.JButton BTN_Guardar;
     private javax.swing.JButton BTN_Modificar;
     private javax.swing.JButton BTN_Nuevo;
-    private javax.swing.JButton BTN_PDF;
-    private javax.swing.JButton BTN_VerEmpresa;
+    private javax.swing.JButton BTN_VerEmpresas;
     private javax.swing.JTable JTABLE_Mant_Empresa;
-    private javax.swing.JTextField TXT_BuscarEmpresa;
+    private javax.swing.JTextField TXT_Buscarempresa;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField txtcodigoempresa;
-    private javax.swing.JTextField txtnombreempresa;
+    private javax.swing.JTextField txtcorreoempresa;
+    private javax.swing.JTextField txtrazonsocial;
+    private javax.swing.JTextField txtrucempresa;
+    private javax.swing.JTextField txttelefonoempresa;
     // End of variables declaration//GEN-END:variables
+public void MostrarEmpresas() {
+        txtrazonsocial.setEnabled(true);
+        JTABLE_Mant_Empresa.setAutoCreateRowSorter(true);
+        modeloTablaEmpresa.setRowCount(0);
+        try {
+            ResultSet rs = conexionBD.listarEmpresa();
+            while (rs.next()) {
+                Object[] fila = {
+                    rs.getInt("id_empresa"),
+                    rs.getString("razon_social"),
+                    rs.getString("ruc"),
+                    rs.getString("telefono"),
+                    rs.getString("correo")
+                };
+                modeloTablaEmpresa.addRow(fila);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al mostrar Empresa:\n" + e.getMessage(),
+                    "Error de consulta", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+public void buscarEmpresas() {
+        modeloTablaEmpresa.setRowCount(0);
+        String busqueda = TXT_Buscarempresa.getText().trim();
+        try {
+            ResultSet rs = conexionBD.buscarEmpresa(busqueda);
+            while (rs.next()) {
+                Object[] fila = {
+                    rs.getInt("id_empresa"),
+                    rs.getString("razon_social"),
+                    rs.getString("ruc"),
+                    rs.getString("telefono"),
+                    rs.getString("correo")
+                };
+                modeloTablaEmpresa.addRow(fila);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al buscar Empresas:\n" + e.getMessage(),
+                    "Error de búsqueda", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 }
