@@ -1,24 +1,52 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+
 package proyecto_almacen;
 
-/**
- *
- * @author PC
- */
+import java.sql.*;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 public class frm_categoria extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(frm_categoria.class.getName());
-
-    /**
-     * Creates new form frm_categoria
-     */
+/* Modelo para mostrar datos en la tabla */
+    DefaultTableModel modeloTablaCategoria = new DefaultTableModel();
+    
+    conexionBD_gabriel conexionBD ;
+    
     public frm_categoria() {
+        setUndecorated(true);
         initComponents();
-    }
+        this.setLocationRelativeTo(null); // Centrar formulario
+        
+        txtcodigoCategoria1.setEnabled(false);
+        BTN_Guardar.setEnabled(false);
+        BTN_Modificar.setEnabled(false);
+                
+        setLocationRelativeTo(null);
 
+
+        // Crear la conexión al iniciar el formulario
+        conexionBD = new conexionBD_gabriel();
+
+        // Verificar que la conexión fue exitosa
+        if (conexionBD.getConnection() == null) {
+            JOptionPane.showMessageDialog(this, "No se pudo conectar con la base de datos.",
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
+            return; // Evita continuar si no hay conexión
+        }
+        // Definir los encabezados de la tabla
+        String titulos[] = {"Codigo categoria", "Nombre categoria", "Descripcion"};
+
+        // Asignar los títulos al modelo
+        modeloTablaCategoria.setColumnIdentifiers(titulos);
+
+        // Establecer el modelo a la JTable
+        JTABLE_Mant_Categoria.setModel(modeloTablaCategoria);
+
+        // Deshabilitar campo de código (solo lo mostrará, no se escribe)
+        txtcodigoCategoria1.setEnabled(false);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -32,16 +60,16 @@ public class frm_categoria extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        txtcodigoCategoria = new javax.swing.JTextField();
+        txtdescripcion = new javax.swing.JTextField();
         txtnombreCategoria = new javax.swing.JTextField();
         BTN_VerCategoria = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        txtcodigoCategoria1 = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         JTABLE_Mant_Categoria = new javax.swing.JTable();
         BTN_Nuevo = new javax.swing.JButton();
         BTN_Guardar = new javax.swing.JButton();
         BTN_Modificar = new javax.swing.JButton();
-        BTN_Desactivar = new javax.swing.JButton();
         BTN_EXCEL = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
@@ -54,7 +82,7 @@ public class frm_categoria extends javax.swing.JFrame {
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel1.setText("MANTENIMIENTO DE FACULTADES");
+        jLabel1.setText("MANTENIMIENTO DE CATEGORIA");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 0, 240, 30));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
@@ -62,20 +90,19 @@ public class frm_categoria extends javax.swing.JFrame {
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel2.setText("Codigo Categoria");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, -1, -1));
+        jLabel2.setText("Descripcion");
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 30, -1, -1));
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel3.setText("Nombre Categoria");
         jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, -1, -1));
 
-        txtcodigoCategoria.setEditable(false);
-        txtcodigoCategoria.setBackground(new java.awt.Color(255, 255, 255));
-        txtcodigoCategoria.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        txtcodigoCategoria.setForeground(new java.awt.Color(0, 0, 204));
-        txtcodigoCategoria.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtcodigoCategoria.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel1.add(txtcodigoCategoria, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 20, 330, 30));
+        txtdescripcion.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtdescripcion.setForeground(new java.awt.Color(0, 0, 204));
+        txtdescripcion.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtdescripcion.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        txtdescripcion.addActionListener(this::txtdescripcionActionPerformed);
+        jPanel1.add(txtdescripcion, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 20, 240, 30));
 
         txtnombreCategoria.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         txtnombreCategoria.setForeground(new java.awt.Color(0, 0, 204));
@@ -86,19 +113,27 @@ public class frm_categoria extends javax.swing.JFrame {
                 txtnombreCategoriaKeyTyped(evt);
             }
         });
-        jPanel1.add(txtnombreCategoria, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 59, 330, 30));
+        jPanel1.add(txtnombreCategoria, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 59, 130, 30));
 
         BTN_VerCategoria.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_VerCategoria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/papel.png"))); // NOI18N
         BTN_VerCategoria.setText("VER CATEGORIA");
         BTN_VerCategoria.addActionListener(this::BTN_VerCategoriaActionPerformed);
-        jPanel1.add(BTN_VerCategoria, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 20, 180, 50));
+        jPanel1.add(BTN_VerCategoria, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 20, 180, 50));
 
-        jTextField1.setEditable(false);
-        jTextField1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -10, 820, 550));
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel6.setText("Codigo Categoria");
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, -1, -1));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 790, 120));
+        txtcodigoCategoria1.setEditable(false);
+        txtcodigoCategoria1.setBackground(new java.awt.Color(255, 255, 255));
+        txtcodigoCategoria1.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtcodigoCategoria1.setForeground(new java.awt.Color(0, 0, 204));
+        txtcodigoCategoria1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtcodigoCategoria1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel1.add(txtcodigoCategoria1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 20, 130, 30));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 810, 120));
 
         JTABLE_Mant_Categoria.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         JTABLE_Mant_Categoria.setForeground(new java.awt.Color(0, 0, 204));
@@ -126,7 +161,7 @@ public class frm_categoria extends javax.swing.JFrame {
         BTN_Nuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/registro.png"))); // NOI18N
         BTN_Nuevo.setText("NUEVO");
         BTN_Nuevo.addActionListener(this::BTN_NuevoActionPerformed);
-        getContentPane().add(BTN_Nuevo, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 160, 190, 50));
+        getContentPane().add(BTN_Nuevo, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 160, 190, 50));
 
         BTN_Guardar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Guardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/disco-flexible (1).png"))); // NOI18N
@@ -137,19 +172,13 @@ public class frm_categoria extends javax.swing.JFrame {
             }
         });
         BTN_Guardar.addActionListener(this::BTN_GuardarActionPerformed);
-        getContentPane().add(BTN_Guardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 160, 190, 50));
+        getContentPane().add(BTN_Guardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 160, 190, 50));
 
         BTN_Modificar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Modificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/ahorrar.png"))); // NOI18N
         BTN_Modificar.setText("MODIFICAR");
         BTN_Modificar.addActionListener(this::BTN_ModificarActionPerformed);
-        getContentPane().add(BTN_Modificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 160, 200, 50));
-
-        BTN_Desactivar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        BTN_Desactivar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/expediente.png"))); // NOI18N
-        BTN_Desactivar.setText("DAR DE BAJA");
-        BTN_Desactivar.addActionListener(this::BTN_DesactivarActionPerformed);
-        getContentPane().add(BTN_Desactivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 160, 180, 50));
+        getContentPane().add(BTN_Modificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 160, 200, 50));
 
         BTN_EXCEL.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_EXCEL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/excel.png"))); // NOI18N
@@ -203,15 +232,37 @@ public class frm_categoria extends javax.swing.JFrame {
     }//GEN-LAST:event_txtnombreCategoriaKeyTyped
 
     private void BTN_VerCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_VerCategoriaActionPerformed
-
+this.mostrarCategorias();
     }//GEN-LAST:event_BTN_VerCategoriaActionPerformed
 
     private void JTABLE_Mant_CategoriaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JTABLE_Mant_CategoriaMouseClicked
+int filaSeleccionada = JTABLE_Mant_Categoria.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            String codigo = JTABLE_Mant_Categoria.getValueAt(filaSeleccionada, 0).toString();
+            String nombre = JTABLE_Mant_Categoria.getValueAt(filaSeleccionada, 1).toString();
+            String descripcion = JTABLE_Mant_Categoria.getValueAt(filaSeleccionada, 2) != null 
+                    ? JTABLE_Mant_Categoria.getValueAt(filaSeleccionada, 2).toString() : "";
 
+            txtcodigoCategoria1.setText(codigo);
+            txtnombreCategoria.setText(nombre);
+            txtdescripcion.setText(descripcion);
+
+            txtnombreCategoria.setEnabled(true);
+            BTN_Modificar.setEnabled(true);
+            BTN_Guardar.setEnabled(false);
+        }
     }//GEN-LAST:event_JTABLE_Mant_CategoriaMouseClicked
 
     private void BTN_NuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_NuevoActionPerformed
-
+txtcodigoCategoria1.setText("");
+        txtnombreCategoria.setText("");
+        txtdescripcion.setText("");
+        
+        txtnombreCategoria.requestFocus();
+        txtnombreCategoria.setEnabled(true);
+        
+        BTN_Guardar.setEnabled(true);
+        BTN_Modificar.setEnabled(false);
     }//GEN-LAST:event_BTN_NuevoActionPerformed
 
     private void BTN_GuardarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BTN_GuardarMouseClicked
@@ -219,23 +270,92 @@ public class frm_categoria extends javax.swing.JFrame {
     }//GEN-LAST:event_BTN_GuardarMouseClicked
 
     private void BTN_GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_GuardarActionPerformed
+String nombre = txtnombreCategoria.getText().trim();
+        String descripcion = txtdescripcion.getText().trim();
 
+        if (nombre.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingrese el nombre de la Categoría",
+                    "Campo requerido", JOptionPane.WARNING_MESSAGE);
+            txtnombreCategoria.requestFocus();
+            return;
+        }
+
+        int respuesta = JOptionPane.showConfirmDialog(this,
+                "¿Desea guardar el registro de la Categoría?", "Confirmación", JOptionPane.YES_NO_OPTION);
+
+        if (respuesta == JOptionPane.YES_OPTION) {
+            try {
+                conexionBD.insertarCategoria(nombre, descripcion);
+
+                JOptionPane.showMessageDialog(this, "Categoría registrada correctamente",
+                        "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
+
+                this.mostrarCategorias();
+
+                // Limpiar campos después de guardar
+                txtcodigoCategoria1.setText("");
+                txtnombreCategoria.setText("");
+                txtdescripcion.setText("");
+                BTN_Guardar.setEnabled(false);
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error al registrar Categoría:\n"
+                        + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_BTN_GuardarActionPerformed
 
     private void BTN_ModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_ModificarActionPerformed
+String codStr = txtcodigoCategoria1.getText().trim();
+        String nombre = txtnombreCategoria.getText().trim();
+        String descripcion = txtdescripcion.getText().trim();
 
+        if (codStr.isEmpty() || nombre.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Seleccione una categoría de la tabla y complete el nombre",
+                    "Campo requerido", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int codigo = Integer.parseInt(codStr);
+
+        int respuesta = JOptionPane.showConfirmDialog(this,
+                "¿Desea modificar esta categoría?", "Confirmación",
+                JOptionPane.YES_NO_OPTION);
+
+        if (respuesta == JOptionPane.YES_OPTION) {
+            try {
+                conexionBD.modificarCategoria(codigo, nombre, descripcion);
+
+                JOptionPane.showMessageDialog(this, "Categoría modificada correctamente",
+                        "Modificación exitosa", JOptionPane.INFORMATION_MESSAGE);
+
+                this.mostrarCategorias();
+
+                // Limpiar campos y bloquear botones tras modificar
+                txtcodigoCategoria1.setText("");
+                txtnombreCategoria.setText("");
+                txtdescripcion.setText("");
+                BTN_Modificar.setEnabled(false);
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error al modificar categoría:\n"
+                        + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_BTN_ModificarActionPerformed
-
-    private void BTN_DesactivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_DesactivarActionPerformed
-
-    }//GEN-LAST:event_BTN_DesactivarActionPerformed
 
     private void BTN_EXCELActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_EXCELActionPerformed
 
     }//GEN-LAST:event_BTN_EXCELActionPerformed
 
     private void TXT_BuscarCategoriaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXT_BuscarCategoriaKeyReleased
+String texto = TXT_BuscarCategoria.getText().trim();
 
+if (texto.isEmpty()) {
+    this.mostrarCategorias();
+} else {
+    this.buscarCategorias(texto);
+}
     }//GEN-LAST:event_TXT_BuscarCategoriaKeyReleased
 
     private void TXT_BuscarCategoriaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXT_BuscarCategoriaKeyTyped
@@ -243,12 +363,25 @@ public class frm_categoria extends javax.swing.JFrame {
     }//GEN-LAST:event_TXT_BuscarCategoriaKeyTyped
 
     private void BTN_Cerrar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_Cerrar1ActionPerformed
-
+int confirmacion = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que deseas cerrar el formulario?", "Confirmar salida",
+                JOptionPane.YES_NO_OPTION);
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            try {
+                conexionBD.cerrarConexion();
+            } catch (Exception e) {
+                System.err.println("Error al cerrar la conexión: " + e.getMessage());
+            }
+            dispose();
+        }
     }//GEN-LAST:event_BTN_Cerrar1ActionPerformed
 
     private void BTN_PDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_PDFActionPerformed
 
     }//GEN-LAST:event_BTN_PDFActionPerformed
+
+    private void txtdescripcionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtdescripcionActionPerformed
+        
+    }//GEN-LAST:event_txtdescripcionActionPerformed
 
     /**
      * @param args the command line arguments
@@ -277,7 +410,6 @@ public class frm_categoria extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BTN_Cerrar1;
-    private javax.swing.JButton BTN_Desactivar;
     private javax.swing.JButton BTN_EXCEL;
     private javax.swing.JButton BTN_Guardar;
     private javax.swing.JButton BTN_Modificar;
@@ -291,11 +423,78 @@ public class frm_categoria extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField txtcodigoCategoria;
+    private javax.swing.JTextField txtcodigoCategoria1;
+    private javax.swing.JTextField txtdescripcion;
     private javax.swing.JTextField txtnombreCategoria;
     // End of variables declaration//GEN-END:variables
+
+public void mostrarCategorias() {
+    // 1. Obtener el modelo de la tabla de la interfaz gráfica
+    DefaultTableModel modeloTablaCategoria = (DefaultTableModel) JTABLE_Mant_Categoria.getModel();
+    
+    // 2. Limpiar las filas previas
+    modeloTablaCategoria.setRowCount(0);
+
+    try {
+        // 3. Crear la instancia de conexión (usa conexionBD o conexionBD_gabriel)
+        conexionBD_gabriel con = new conexionBD_gabriel();
+        
+        // 4. Obtener los datos llamando a listarCategorias()
+        ResultSet rs = con.listarCategorias();
+
+        // 5. Cargar las filas en la JTable
+        while (rs.next()) {
+            Object[] fila = new Object[3];
+            fila[0] = rs.getInt(1);    // ID / Código
+            fila[1] = rs.getString(2); // Nombre
+            fila[2] = rs.getString(3); // Descripción
+            
+            modeloTablaCategoria.addRow(fila);
+        }
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this, 
+            "Error al cargar las categorías: " + ex.getMessage(), 
+            "Error de Base de Datos", 
+            JOptionPane.ERROR_MESSAGE);
+    }
+}
+public void buscarCategorias(String textoBusqueda) {
+    DefaultTableModel modeloTablaCategoria = (DefaultTableModel) JTABLE_Mant_Categoria.getModel();
+    modeloTablaCategoria.setRowCount(0);
+
+    try {
+        conexionBD_gabriel con = new conexionBD_gabriel();
+        ResultSet rs = con.buscarCategorias(textoBusqueda);
+
+        while (rs.next()) {
+            Object[] fila = new Object[3];
+            fila[0] = rs.getInt(1);    // Código
+            fila[1] = rs.getString(2); // Nombre
+            fila[2] = rs.getString(3); // Descripción
+            
+            modeloTablaCategoria.addRow(fila);
+        }
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this, 
+            "Error al buscar categorías: " + ex.getMessage(), 
+            "Error de Base de Datos", 
+            JOptionPane.ERROR_MESSAGE);
+    }
+}
+private void txtbuscarCategoriaKeyReleased(java.awt.event.KeyEvent evt) {                                             
+    String texto = TXT_BuscarCategoria.getText().trim();
+    
+    // Si la caja de texto está vacía, muestra todas las categorías de nuevo
+    if (texto.isEmpty()) {
+        this.mostrarCategorias();
+    } else {
+        this.buscarCategorias(texto);
+    }
+}
 }

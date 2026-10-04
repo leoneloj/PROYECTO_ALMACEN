@@ -1,22 +1,49 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+
 package proyecto_almacen;
 
-/**
- *
- * @author PC
- */
+import java.sql.*;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 public class frm_tipo_personal extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(frm_tipo_personal.class.getName());
+    /* Modelo para mostrar datos en la tabla */
+    DefaultTableModel modeloTablaTipoPersonal = new DefaultTableModel();
 
-    /**
-     * Creates new form frm_tipo_personal
-     */
+    /* Objeto de conexión a la base de datos */
+    conexionBD_gabriel conexionBD;
     public frm_tipo_personal() {
+        setUndecorated(true);
         initComponents();
+        txtcodigotipo_personal1.setEnabled(false);
+        txtobservaciones.setEditable(true);
+        BTN_Guardar.setEnabled(false);
+        BTN_Modificar.setEnabled(false);
+
+        setLocationRelativeTo(null);
+
+        // Crear la conexión al iniciar el formulario
+        conexionBD = new conexionBD_gabriel();
+
+        // Verificar que la conexión fue exitosa
+        if (conexionBD.getConnection() == null) {
+            JOptionPane.showMessageDialog(null, "No se pudo conectar con la base de datos.",
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
+            return; // Evita continuar si no hay conexión
+        }
+
+        // Definir los encabezados de la tabla
+        String titulos[] = {"Codigo tipo_personal", "Nombre tipo_personal", "Observaciones"};
+
+        // Asignar los títulos al modelo
+        modeloTablaTipoPersonal.setColumnIdentifiers(titulos);
+
+        // Establecer el modelo a la JTable
+        JTABLE_Mant_tipo_personal.setModel(modeloTablaTipoPersonal);
+
+        // Deshabilitar campo de código (solo lo mostrará, no se escribe)
+        txtcodigotipo_personal1.setEnabled(false);
     }
 
     /**
@@ -32,16 +59,16 @@ public class frm_tipo_personal extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        txtcodigotipo_personal = new javax.swing.JTextField();
+        txtobservaciones = new javax.swing.JTextField();
         txtnombretipo_personal = new javax.swing.JTextField();
         BTN_VerTipo_personal = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        txtcodigotipo_personal1 = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         JTABLE_Mant_tipo_personal = new javax.swing.JTable();
         BTN_Nuevo = new javax.swing.JButton();
         BTN_Guardar = new javax.swing.JButton();
         BTN_Modificar = new javax.swing.JButton();
-        BTN_Desactivar = new javax.swing.JButton();
         BTN_EXCEL = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
@@ -62,20 +89,18 @@ public class frm_tipo_personal extends javax.swing.JFrame {
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel2.setText("Codigo tipo_personal");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, -1, -1));
+        jLabel2.setText("Observaciones");
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 30, -1, -1));
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel3.setText("Nombre tipo_personal");
         jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, -1, -1));
 
-        txtcodigotipo_personal.setEditable(false);
-        txtcodigotipo_personal.setBackground(new java.awt.Color(255, 255, 255));
-        txtcodigotipo_personal.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        txtcodigotipo_personal.setForeground(new java.awt.Color(0, 0, 204));
-        txtcodigotipo_personal.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtcodigotipo_personal.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel1.add(txtcodigotipo_personal, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 20, 330, 30));
+        txtobservaciones.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtobservaciones.setForeground(new java.awt.Color(0, 0, 204));
+        txtobservaciones.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtobservaciones.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel1.add(txtobservaciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 20, 240, 30));
 
         txtnombretipo_personal.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         txtnombretipo_personal.setForeground(new java.awt.Color(0, 0, 204));
@@ -86,19 +111,27 @@ public class frm_tipo_personal extends javax.swing.JFrame {
                 txtnombretipo_personalKeyTyped(evt);
             }
         });
-        jPanel1.add(txtnombretipo_personal, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 59, 330, 30));
+        jPanel1.add(txtnombretipo_personal, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 59, 140, 30));
 
         BTN_VerTipo_personal.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_VerTipo_personal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/papel.png"))); // NOI18N
         BTN_VerTipo_personal.setText("VER TIPO_PERSONAL");
         BTN_VerTipo_personal.addActionListener(this::BTN_VerTipo_personalActionPerformed);
-        jPanel1.add(BTN_VerTipo_personal, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 20, 190, 50));
+        jPanel1.add(BTN_VerTipo_personal, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 20, 190, 50));
 
-        jTextField1.setEditable(false);
-        jTextField1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -10, 820, 550));
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel6.setText("Codigo tipo_personal");
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, -1, -1));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 790, 120));
+        txtcodigotipo_personal1.setEditable(false);
+        txtcodigotipo_personal1.setBackground(new java.awt.Color(255, 255, 255));
+        txtcodigotipo_personal1.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtcodigotipo_personal1.setForeground(new java.awt.Color(0, 0, 204));
+        txtcodigotipo_personal1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtcodigotipo_personal1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel1.add(txtcodigotipo_personal1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 20, 140, 30));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 850, 120));
 
         JTABLE_Mant_tipo_personal.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         JTABLE_Mant_tipo_personal.setForeground(new java.awt.Color(0, 0, 204));
@@ -126,7 +159,7 @@ public class frm_tipo_personal extends javax.swing.JFrame {
         BTN_Nuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/registro.png"))); // NOI18N
         BTN_Nuevo.setText("NUEVO");
         BTN_Nuevo.addActionListener(this::BTN_NuevoActionPerformed);
-        getContentPane().add(BTN_Nuevo, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 160, 190, 50));
+        getContentPane().add(BTN_Nuevo, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 160, 190, 50));
 
         BTN_Guardar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Guardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/disco-flexible (1).png"))); // NOI18N
@@ -137,19 +170,13 @@ public class frm_tipo_personal extends javax.swing.JFrame {
             }
         });
         BTN_Guardar.addActionListener(this::BTN_GuardarActionPerformed);
-        getContentPane().add(BTN_Guardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 160, 190, 50));
+        getContentPane().add(BTN_Guardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 160, 190, 50));
 
         BTN_Modificar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Modificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/ahorrar.png"))); // NOI18N
         BTN_Modificar.setText("MODIFICAR");
         BTN_Modificar.addActionListener(this::BTN_ModificarActionPerformed);
-        getContentPane().add(BTN_Modificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 160, 200, 50));
-
-        BTN_Desactivar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        BTN_Desactivar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/expediente.png"))); // NOI18N
-        BTN_Desactivar.setText("DAR DE BAJA");
-        BTN_Desactivar.addActionListener(this::BTN_DesactivarActionPerformed);
-        getContentPane().add(BTN_Desactivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 160, 180, 50));
+        getContentPane().add(BTN_Modificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 160, 200, 50));
 
         BTN_EXCEL.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_EXCEL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/excel.png"))); // NOI18N
@@ -203,15 +230,36 @@ public class frm_tipo_personal extends javax.swing.JFrame {
     }//GEN-LAST:event_txtnombretipo_personalKeyTyped
 
     private void BTN_VerTipo_personalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_VerTipo_personalActionPerformed
-
+this.MostrarTiposPersonal();
     }//GEN-LAST:event_BTN_VerTipo_personalActionPerformed
 
     private void JTABLE_Mant_tipo_personalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JTABLE_Mant_tipo_personalMouseClicked
+int filaSeleccionada = JTABLE_Mant_tipo_personal.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            String codigo = JTABLE_Mant_tipo_personal.getValueAt(filaSeleccionada, 0).toString();
+            String nombre = JTABLE_Mant_tipo_personal.getValueAt(filaSeleccionada, 1) != null ? JTABLE_Mant_tipo_personal.getValueAt(filaSeleccionada, 1).toString() : "";
+            String observaciones = JTABLE_Mant_tipo_personal.getValueAt(filaSeleccionada, 2) != null ? JTABLE_Mant_tipo_personal.getValueAt(filaSeleccionada, 2).toString() : "";
 
+            txtcodigotipo_personal1.setText(codigo);
+            txtnombretipo_personal.setText(nombre);
+            txtobservaciones.setText(observaciones);
+
+            txtnombretipo_personal.setEnabled(true);
+            BTN_Modificar.setEnabled(true);
+            BTN_Guardar.setEnabled(false);
+        }
     }//GEN-LAST:event_JTABLE_Mant_tipo_personalMouseClicked
 
     private void BTN_NuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_NuevoActionPerformed
+txtcodigotipo_personal1.setText("");
+        txtnombretipo_personal.setText("");
+        txtobservaciones.setText("");
 
+        txtnombretipo_personal.requestFocus();
+        txtnombretipo_personal.setEnabled(true);
+
+        BTN_Guardar.setEnabled(true);
+        BTN_Modificar.setEnabled(false);
     }//GEN-LAST:event_BTN_NuevoActionPerformed
 
     private void BTN_GuardarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BTN_GuardarMouseClicked
@@ -219,23 +267,84 @@ public class frm_tipo_personal extends javax.swing.JFrame {
     }//GEN-LAST:event_BTN_GuardarMouseClicked
 
     private void BTN_GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_GuardarActionPerformed
+String nombre = txtnombretipo_personal.getText().trim();
+        String observaciones = txtobservaciones.getText().trim();
 
+        if (nombre.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor, complete el Nombre del tipo_personal",
+                    "Campo requerido", JOptionPane.WARNING_MESSAGE);
+            txtnombretipo_personal.requestFocus();
+            return;
+        }
+
+        int respuesta = JOptionPane.showConfirmDialog(null,
+                "¿Desea guardar el registro del tipo_personal?", "Confirmación", JOptionPane.YES_NO_OPTION);
+
+        if (respuesta == JOptionPane.YES_OPTION) {
+            try {
+                conexionBD.insertarTipoPersonal(nombre, observaciones);
+
+                JOptionPane.showMessageDialog(null, "tipo_personal registrado correctamente",
+                        "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
+
+                this.MostrarTiposPersonal();
+
+                txtcodigotipo_personal1.setText("");
+                txtnombretipo_personal.setText("");
+                txtobservaciones.setText("");
+                BTN_Guardar.setEnabled(false);
+
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, "Error al registrar tipo_personal:\n"
+                        + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_BTN_GuardarActionPerformed
 
     private void BTN_ModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_ModificarActionPerformed
+String codStr = txtcodigotipo_personal1.getText().trim();
+        String nombre = txtnombretipo_personal.getText().trim();
+        String observaciones = txtobservaciones.getText().trim();
 
+        if (codStr.isEmpty() || nombre.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Seleccione un tipo_personal de la tabla y complete el Nombre",
+                    "Campo requerido", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int codigo = Integer.parseInt(codStr);
+
+        int respuesta = JOptionPane.showConfirmDialog(null,
+                "¿Desea modificar este tipo_personal?", "Confirmación",
+                JOptionPane.YES_NO_OPTION);
+
+        if (respuesta == JOptionPane.YES_OPTION) {
+            try {
+                conexionBD.modificarTipoPersonal(codigo, nombre, observaciones);
+
+                JOptionPane.showMessageDialog(null, "tipo_personal modificado correctamente",
+                        "Modificación exitosa", JOptionPane.INFORMATION_MESSAGE);
+
+                this.MostrarTiposPersonal();
+
+                txtcodigotipo_personal1.setText("");
+                txtnombretipo_personal.setText("");
+                txtobservaciones.setText("");
+                BTN_Modificar.setEnabled(false);
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Error al modificar tipo_personal:\n"
+                        + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_BTN_ModificarActionPerformed
-
-    private void BTN_DesactivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_DesactivarActionPerformed
-
-    }//GEN-LAST:event_BTN_DesactivarActionPerformed
 
     private void BTN_EXCELActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_EXCELActionPerformed
 
     }//GEN-LAST:event_BTN_EXCELActionPerformed
 
     private void TXT_BuscarTipo_personalKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXT_BuscarTipo_personalKeyReleased
-
+this.buscarTiposPersonal();
     }//GEN-LAST:event_TXT_BuscarTipo_personalKeyReleased
 
     private void TXT_BuscarTipo_personalKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXT_BuscarTipo_personalKeyTyped
@@ -243,7 +352,16 @@ public class frm_tipo_personal extends javax.swing.JFrame {
     }//GEN-LAST:event_TXT_BuscarTipo_personalKeyTyped
 
     private void BTN_Cerrar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_Cerrar1ActionPerformed
-
+int confirmacion = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que deseas cerrar el formulario?", "Confirmar salida",
+                JOptionPane.YES_NO_OPTION);
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            try {
+                conexionBD.cerrarConexion();
+            } catch (Exception e) {
+                System.err.println("Error al cerrar la conexión: " + e.getMessage());
+            }
+            dispose();
+        }
     }//GEN-LAST:event_BTN_Cerrar1ActionPerformed
 
     private void BTN_PDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_PDFActionPerformed
@@ -277,7 +395,6 @@ public class frm_tipo_personal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BTN_Cerrar1;
-    private javax.swing.JButton BTN_Desactivar;
     private javax.swing.JButton BTN_EXCEL;
     private javax.swing.JButton BTN_Guardar;
     private javax.swing.JButton BTN_Modificar;
@@ -291,11 +408,51 @@ public class frm_tipo_personal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField txtcodigotipo_personal;
+    private javax.swing.JTextField txtcodigotipo_personal1;
     private javax.swing.JTextField txtnombretipo_personal;
+    private javax.swing.JTextField txtobservaciones;
     // End of variables declaration//GEN-END:variables
+public void MostrarTiposPersonal() {
+        txtnombretipo_personal.setEnabled(true);
+        JTABLE_Mant_tipo_personal.setAutoCreateRowSorter(true);
+        modeloTablaTipoPersonal.setRowCount(0);
+        try {
+            ResultSet rs = conexionBD.listarTiposPersonal();
+            while (rs.next()) {
+                Object[] fila = {
+                    rs.getInt("id_tipo_personal"),
+                    rs.getString("nombre_tipo_personal"),
+                    rs.getString("observaciones")
+                };
+                modeloTablaTipoPersonal.addRow(fila);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al mostrar tipo_personal:\n" + e.getMessage(),
+                    "Error de consulta", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void buscarTiposPersonal() {
+        modeloTablaTipoPersonal.setRowCount(0);
+        String busqueda = TXT_BuscarTipo_personal.getText().trim();
+        try {
+            ResultSet rs = conexionBD.buscarTiposPersonal(busqueda);
+            while (rs.next()) {
+                Object[] fila = {
+                    rs.getInt("id_tipo_personal"),
+                    rs.getString("nombre_tipo_personal"),
+                    rs.getString("observaciones")
+                };
+                modeloTablaTipoPersonal.addRow(fila);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,
+                    "Error al buscar tipo_personal:\n" + e.getMessage(),
+                    "Error de búsqueda", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 }

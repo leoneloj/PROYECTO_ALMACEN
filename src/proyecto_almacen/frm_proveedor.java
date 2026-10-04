@@ -1,22 +1,54 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+
 package proyecto_almacen;
 
-/**
- *
- * @author PC
- */
+import java.sql.*;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 public class frm_proveedor extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(frm_proveedor.class.getName());
+    /* Modelo para mostrar datos en la tabla */
+    DefaultTableModel modeloTablaProveedor = new DefaultTableModel();
 
-    /**
-     * Creates new form frm_proveedor
-     */
+    /* Objeto de conexión a la base de datos */
+    conexionBD_gabriel conexionBD;
+    
     public frm_proveedor() {
+        setUndecorated(true);
         initComponents();
+        txtcodigoproveedor1.setEnabled(false);
+        txt_telefono.setEditable(true);
+        txtcorreo.setEditable(true);
+        txtdireccion.setEditable(true);
+        BTN_Guardar.setEnabled(false);
+        BTN_Modificar.setEnabled(false);
+        
+        setLocationRelativeTo(null);
+
+        
+        // Crear la conexión al iniciar el formulario
+        conexionBD = new conexionBD_gabriel();
+
+        // Verificar que la conexión fue exitosa
+        if (conexionBD.getConnection() == null) {
+            JOptionPane.showMessageDialog(null, "No se pudo conectar con la base de datos.",
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
+            return; // Evita continuar si no hay conexión
+        }
+
+        // Definir los encabezados de la tabla
+        String titulos[] = {"Codigo", "RUC", "Nombre / Razon Social", "Telefono", "Correo", "Direccion"};
+
+        // Asignar los títulos al modelo
+        modeloTablaProveedor.setColumnIdentifiers(titulos);
+
+        // Establecer el modelo a la JTable
+        JTABLE_Mant_Proveedor.setModel(modeloTablaProveedor);
+
+        // Deshabilitar campo de código (solo lo mostrará, no se escribe)
+        txtcodigoproveedor1.setEnabled(false);
+    
     }
 
     /**
@@ -32,16 +64,22 @@ public class frm_proveedor extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        txtcodigoproveedor = new javax.swing.JTextField();
-        txtnombreproveedor = new javax.swing.JTextField();
+        txtdireccion = new javax.swing.JTextField();
+        txtruc = new javax.swing.JTextField();
         BTN_VerProveedor = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        txtnombreproveedor1 = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        txtcodigoproveedor1 = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        txt_telefono = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        txtcorreo = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         JTABLE_Mant_Proveedor = new javax.swing.JTable();
         BTN_Nuevo = new javax.swing.JButton();
         BTN_Guardar = new javax.swing.JButton();
         BTN_Modificar = new javax.swing.JButton();
-        BTN_Desactivar = new javax.swing.JButton();
         BTN_EXCEL = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
@@ -54,7 +92,7 @@ public class frm_proveedor extends javax.swing.JFrame {
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel1.setText("MANTENIMIENTO DE FACULTADES");
+        jLabel1.setText("MANTENIMIENTO DE PROVEEDOR");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 0, 240, 30));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
@@ -62,31 +100,29 @@ public class frm_proveedor extends javax.swing.JFrame {
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel2.setText("Codigo Proveedor");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, -1, -1));
+        jLabel2.setText("Direccion");
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 110, -1, -1));
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel3.setText("Nombre Proveedor");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, -1, -1));
+        jLabel3.setText("Ruc");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, -1, -1));
 
-        txtcodigoproveedor.setEditable(false);
-        txtcodigoproveedor.setBackground(new java.awt.Color(255, 255, 255));
-        txtcodigoproveedor.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        txtcodigoproveedor.setForeground(new java.awt.Color(0, 0, 204));
-        txtcodigoproveedor.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtcodigoproveedor.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel1.add(txtcodigoproveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 20, 330, 30));
+        txtdireccion.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtdireccion.setForeground(new java.awt.Color(0, 0, 204));
+        txtdireccion.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtdireccion.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel1.add(txtdireccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 100, 130, 30));
 
-        txtnombreproveedor.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        txtnombreproveedor.setForeground(new java.awt.Color(0, 0, 204));
-        txtnombreproveedor.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtnombreproveedor.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        txtnombreproveedor.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtruc.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtruc.setForeground(new java.awt.Color(0, 0, 204));
+        txtruc.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtruc.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        txtruc.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtnombreproveedorKeyTyped(evt);
+                txtrucKeyTyped(evt);
             }
         });
-        jPanel1.add(txtnombreproveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 59, 330, 30));
+        jPanel1.add(txtruc, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 100, 130, 30));
 
         BTN_VerProveedor.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_VerProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/papel.png"))); // NOI18N
@@ -94,11 +130,54 @@ public class frm_proveedor extends javax.swing.JFrame {
         BTN_VerProveedor.addActionListener(this::BTN_VerProveedorActionPerformed);
         jPanel1.add(BTN_VerProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 20, 180, 50));
 
-        jTextField1.setEditable(false);
-        jTextField1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -10, 820, 550));
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel6.setText("Nombre Proveedor");
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, -1, -1));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 790, 120));
+        txtnombreproveedor1.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtnombreproveedor1.setForeground(new java.awt.Color(0, 0, 204));
+        txtnombreproveedor1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtnombreproveedor1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        txtnombreproveedor1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtnombreproveedor1KeyTyped(evt);
+            }
+        });
+        jPanel1.add(txtnombreproveedor1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 59, 130, 30));
+
+        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel7.setText("Codigo Proveedor");
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, -1, -1));
+
+        txtcodigoproveedor1.setEditable(false);
+        txtcodigoproveedor1.setBackground(new java.awt.Color(255, 255, 255));
+        txtcodigoproveedor1.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtcodigoproveedor1.setForeground(new java.awt.Color(0, 0, 204));
+        txtcodigoproveedor1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtcodigoproveedor1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel1.add(txtcodigoproveedor1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 20, 130, 30));
+
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel8.setText("Telefono");
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 30, -1, -1));
+
+        txt_telefono.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txt_telefono.setForeground(new java.awt.Color(0, 0, 204));
+        txt_telefono.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txt_telefono.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel1.add(txt_telefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 20, 130, 30));
+
+        jLabel9.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel9.setText("Correo");
+        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 70, -1, -1));
+
+        txtcorreo.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtcorreo.setForeground(new java.awt.Color(0, 0, 204));
+        txtcorreo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtcorreo.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel1.add(txtcorreo, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 60, 130, 30));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 790, 140));
 
         JTABLE_Mant_Proveedor.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         JTABLE_Mant_Proveedor.setForeground(new java.awt.Color(0, 0, 204));
@@ -120,13 +199,13 @@ public class frm_proveedor extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(JTABLE_Mant_Proveedor);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 270, 810, 220));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 290, 810, 220));
 
         BTN_Nuevo.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Nuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/registro.png"))); // NOI18N
         BTN_Nuevo.setText("NUEVO");
         BTN_Nuevo.addActionListener(this::BTN_NuevoActionPerformed);
-        getContentPane().add(BTN_Nuevo, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 160, 190, 50));
+        getContentPane().add(BTN_Nuevo, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 180, 190, 50));
 
         BTN_Guardar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Guardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/disco-flexible (1).png"))); // NOI18N
@@ -137,25 +216,19 @@ public class frm_proveedor extends javax.swing.JFrame {
             }
         });
         BTN_Guardar.addActionListener(this::BTN_GuardarActionPerformed);
-        getContentPane().add(BTN_Guardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 160, 190, 50));
+        getContentPane().add(BTN_Guardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 180, 190, 50));
 
         BTN_Modificar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Modificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/ahorrar.png"))); // NOI18N
         BTN_Modificar.setText("MODIFICAR");
         BTN_Modificar.addActionListener(this::BTN_ModificarActionPerformed);
-        getContentPane().add(BTN_Modificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 160, 200, 50));
-
-        BTN_Desactivar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        BTN_Desactivar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/expediente.png"))); // NOI18N
-        BTN_Desactivar.setText("DAR DE BAJA");
-        BTN_Desactivar.addActionListener(this::BTN_DesactivarActionPerformed);
-        getContentPane().add(BTN_Desactivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 160, 180, 50));
+        getContentPane().add(BTN_Modificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 180, 200, 50));
 
         BTN_EXCEL.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_EXCEL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/excel.png"))); // NOI18N
         BTN_EXCEL.setText("Exportar");
         BTN_EXCEL.addActionListener(this::BTN_EXCELActionPerformed);
-        getContentPane().add(BTN_EXCEL, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 500, 120, 40));
+        getContentPane().add(BTN_EXCEL, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 520, 120, 40));
 
         jPanel2.setBackground(new java.awt.Color(0, 0, 0));
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -182,36 +255,66 @@ public class frm_proveedor extends javax.swing.JFrame {
         jLabel5.setText("BUSCAR");
         jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 10, 120, 30));
 
-        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 220, 810, 50));
+        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 240, 810, 50));
 
         BTN_Cerrar1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Cerrar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/cerrado.png"))); // NOI18N
         BTN_Cerrar1.setText("Cerrar");
         BTN_Cerrar1.addActionListener(this::BTN_Cerrar1ActionPerformed);
-        getContentPane().add(BTN_Cerrar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 500, 130, 40));
+        getContentPane().add(BTN_Cerrar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 520, 130, 40));
 
         BTN_PDF.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/archivo-de-acrobat-reader.png"))); // NOI18N
         BTN_PDF.setText("Exportar");
         BTN_PDF.addActionListener(this::BTN_PDFActionPerformed);
-        getContentPane().add(BTN_PDF, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 500, 120, 40));
+        getContentPane().add(BTN_PDF, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 520, 120, 40));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtnombreproveedorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtnombreproveedorKeyTyped
+    private void txtrucKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtrucKeyTyped
 
-    }//GEN-LAST:event_txtnombreproveedorKeyTyped
+    }//GEN-LAST:event_txtrucKeyTyped
 
     private void BTN_VerProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_VerProveedorActionPerformed
-
+this.MostrarProveedores();
     }//GEN-LAST:event_BTN_VerProveedorActionPerformed
 
     private void JTABLE_Mant_ProveedorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JTABLE_Mant_ProveedorMouseClicked
+int filaSeleccionada = JTABLE_Mant_Proveedor.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            String codigo = JTABLE_Mant_Proveedor.getValueAt(filaSeleccionada, 0).toString();
+            String ruc = JTABLE_Mant_Proveedor.getValueAt(filaSeleccionada, 1) != null ? JTABLE_Mant_Proveedor.getValueAt(filaSeleccionada, 1).toString() : "";
+            String nombre = JTABLE_Mant_Proveedor.getValueAt(filaSeleccionada, 2) != null ? JTABLE_Mant_Proveedor.getValueAt(filaSeleccionada, 2).toString() : "";
+            String telefono = JTABLE_Mant_Proveedor.getValueAt(filaSeleccionada, 3) != null ? JTABLE_Mant_Proveedor.getValueAt(filaSeleccionada, 3).toString() : "";
+            String correo = JTABLE_Mant_Proveedor.getValueAt(filaSeleccionada, 4) != null ? JTABLE_Mant_Proveedor.getValueAt(filaSeleccionada, 4).toString() : "";
+            String direccion = JTABLE_Mant_Proveedor.getValueAt(filaSeleccionada, 5) != null ? JTABLE_Mant_Proveedor.getValueAt(filaSeleccionada, 5).toString() : "";
 
+            txtcodigoproveedor1.setText(codigo);
+            txtruc.setText(ruc);
+            txtnombreproveedor1.setText(nombre);
+            txt_telefono.setText(telefono);
+            txtcorreo.setText(correo);
+            txtdireccion.setText(direccion);
+
+            txtnombreproveedor1.setEnabled(true);
+            BTN_Modificar.setEnabled(true);
+            BTN_Guardar.setEnabled(false);
+        }
     }//GEN-LAST:event_JTABLE_Mant_ProveedorMouseClicked
 
     private void BTN_NuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_NuevoActionPerformed
+txtcodigoproveedor1.setText("");
+        txtruc.setText("");
+        txtnombreproveedor1.setText("");
+        txt_telefono.setText("");
+        txtcorreo.setText("");
+        txtdireccion.setText("");
 
+        txtruc.requestFocus();
+        txtnombreproveedor1.setEnabled(true);
+
+        BTN_Guardar.setEnabled(true);
+        BTN_Modificar.setEnabled(false);
     }//GEN-LAST:event_BTN_NuevoActionPerformed
 
     private void BTN_GuardarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BTN_GuardarMouseClicked
@@ -219,23 +322,96 @@ public class frm_proveedor extends javax.swing.JFrame {
     }//GEN-LAST:event_BTN_GuardarMouseClicked
 
     private void BTN_GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_GuardarActionPerformed
+String ruc = txtruc.getText().trim();
+        String nombre = txtnombreproveedor1.getText().trim();
+        String telefono = txt_telefono.getText().trim();
+        String correo = txtcorreo.getText().trim();
+        String direccion = txtdireccion.getText().trim();
 
+        if (ruc.isEmpty() || nombre.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor, complete al menos el RUC y el Nombre del Proveedor",
+                    "Campo requerido", JOptionPane.WARNING_MESSAGE);
+            txtruc.requestFocus();
+            return;
+        }
+
+        int respuesta = JOptionPane.showConfirmDialog(null,
+                "¿Desea guardar el registro del Proveedor?", "Confirmación", JOptionPane.YES_NO_OPTION);
+
+        if (respuesta == JOptionPane.YES_OPTION) {
+            try {
+                conexionBD.insertarProveedor(ruc, nombre, telefono, correo, direccion);
+
+                JOptionPane.showMessageDialog(null, "Proveedor registrado correctamente",
+                        "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
+
+                this.MostrarProveedores();
+
+                txtcodigoproveedor1.setText("");
+                txtruc.setText("");
+                txtnombreproveedor1.setText("");
+                txt_telefono.setText("");
+                txtcorreo.setText("");
+                txtdireccion.setText("");
+                BTN_Guardar.setEnabled(false);
+
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, "Error al registrar Proveedor:\n"
+                        + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_BTN_GuardarActionPerformed
 
     private void BTN_ModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_ModificarActionPerformed
+String codStr = txtcodigoproveedor1.getText().trim();
+        String ruc = txtruc.getText().trim();
+        String nombre = txtnombreproveedor1.getText().trim();
+        String telefono = txt_telefono.getText().trim();
+        String correo = txtcorreo.getText().trim();
+        String direccion = txtdireccion.getText().trim();
 
+        if (codStr.isEmpty() || ruc.isEmpty() || nombre.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Seleccione un proveedor de la tabla y complete el RUC y Nombre",
+                    "Campo requerido", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int codigo = Integer.parseInt(codStr);
+
+        int respuesta = JOptionPane.showConfirmDialog(null,
+                "¿Desea modificar este proveedor?", "Confirmación",
+                JOptionPane.YES_NO_OPTION);
+
+        if (respuesta == JOptionPane.YES_OPTION) {
+            try {
+                conexionBD.modificarProveedor(codigo, ruc, nombre, telefono, correo, direccion);
+
+                JOptionPane.showMessageDialog(null, "Proveedor modificado correctamente",
+                        "Modificación exitosa", JOptionPane.INFORMATION_MESSAGE);
+
+                this.MostrarProveedores();
+
+                txtcodigoproveedor1.setText("");
+                txtruc.setText("");
+                txtnombreproveedor1.setText("");
+                txt_telefono.setText("");
+                txtcorreo.setText("");
+                txtdireccion.setText("");
+                BTN_Modificar.setEnabled(false);
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Error al modificar proveedor:\n"
+                        + ex.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_BTN_ModificarActionPerformed
-
-    private void BTN_DesactivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_DesactivarActionPerformed
-
-    }//GEN-LAST:event_BTN_DesactivarActionPerformed
 
     private void BTN_EXCELActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_EXCELActionPerformed
 
     }//GEN-LAST:event_BTN_EXCELActionPerformed
 
     private void TXT_BuscarProveedorKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXT_BuscarProveedorKeyReleased
-
+this.buscarProveedores();
     }//GEN-LAST:event_TXT_BuscarProveedorKeyReleased
 
     private void TXT_BuscarProveedorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXT_BuscarProveedorKeyTyped
@@ -243,12 +419,25 @@ public class frm_proveedor extends javax.swing.JFrame {
     }//GEN-LAST:event_TXT_BuscarProveedorKeyTyped
 
     private void BTN_Cerrar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_Cerrar1ActionPerformed
-
+int confirmacion = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que deseas cerrar el formulario?", "Confirmar salida",
+                JOptionPane.YES_NO_OPTION);
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            try {
+                conexionBD.cerrarConexion();
+            } catch (Exception e) {
+                System.err.println("Error al cerrar la conexión: " + e.getMessage());
+            }
+            dispose();
+        }
     }//GEN-LAST:event_BTN_Cerrar1ActionPerformed
 
     private void BTN_PDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_PDFActionPerformed
 
     }//GEN-LAST:event_BTN_PDFActionPerformed
+
+    private void txtnombreproveedor1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtnombreproveedor1KeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtnombreproveedor1KeyTyped
 
     /**
      * @param args the command line arguments
@@ -277,7 +466,6 @@ public class frm_proveedor extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BTN_Cerrar1;
-    private javax.swing.JButton BTN_Desactivar;
     private javax.swing.JButton BTN_EXCEL;
     private javax.swing.JButton BTN_Guardar;
     private javax.swing.JButton BTN_Modificar;
@@ -291,11 +479,62 @@ public class frm_proveedor extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField txtcodigoproveedor;
-    private javax.swing.JTextField txtnombreproveedor;
+    private javax.swing.JTextField txt_telefono;
+    private javax.swing.JTextField txtcodigoproveedor1;
+    private javax.swing.JTextField txtcorreo;
+    private javax.swing.JTextField txtdireccion;
+    private javax.swing.JTextField txtnombreproveedor1;
+    private javax.swing.JTextField txtruc;
     // End of variables declaration//GEN-END:variables
+public void MostrarProveedores() {
+        txtnombreproveedor1.setEnabled(true);
+        JTABLE_Mant_Proveedor.setAutoCreateRowSorter(true);
+        modeloTablaProveedor.setRowCount(0);
+        try {
+            ResultSet rs = conexionBD.listarProveedores();
+            while (rs.next()) {
+                Object[] fila = {
+                    rs.getInt("id_proveedor"),
+                    rs.getString("ruc"),
+                    rs.getString("nombre"),
+                    rs.getString("telefono"),
+                    rs.getString("correo"),
+                    rs.getString("direccion")
+                };
+                modeloTablaProveedor.addRow(fila);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al mostrar Proveedor:\n" + e.getMessage(),
+                    "Error de consulta", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+public void buscarProveedores() {
+        modeloTablaProveedor.setRowCount(0);
+        String busqueda = TXT_BuscarProveedor.getText().trim();
+        try {
+            ResultSet rs = conexionBD.buscarProveedores(busqueda);
+            while (rs.next()) {
+                Object[] fila = {
+                    rs.getInt("id_proveedor"),
+                    rs.getString("ruc"),
+                    rs.getString("nombre"),
+                    rs.getString("telefono"),
+                    rs.getString("correo"),
+                    rs.getString("direccion")
+                };
+                modeloTablaProveedor.addRow(fila);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,
+                    "Error al buscar Proveedores:\n" + e.getMessage(),
+                    "Error de búsqueda", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 }
