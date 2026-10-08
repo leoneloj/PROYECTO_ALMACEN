@@ -14,7 +14,11 @@ public class frm_area extends javax.swing.JFrame {
     conexionBD conexionBD;
 
     public frm_area() {
+        setUndecorated(true);
+
         initComponents();//inicializa los compones visuales
+        this.setLocationRelativeTo(null); // Centrar ventana
+
         txtcodigoarea.setEnabled(false);
         BTN_Guardar.setEnabled(false);
         BTN_Modificar.setEnabled(false);
@@ -330,7 +334,7 @@ public class frm_area extends javax.swing.JFrame {
     }//GEN-LAST:event_BTN_EXCELActionPerformed
 
     private void BTN_Cerrar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_Cerrar1ActionPerformed
-int confirmacion = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que deseas cerrar el formulario?", "Confirmar salida",
+        int confirmacion = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que deseas cerrar el formulario?", "Confirmar salida",
                 JOptionPane.YES_NO_OPTION);
         if (confirmacion == JOptionPane.YES_OPTION) {
             try {

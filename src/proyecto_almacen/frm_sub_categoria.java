@@ -7,12 +7,15 @@ import javax.swing.JOptionPane; // Para mensajes emergentes
 public class frm_sub_categoria extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(frm_sub_categoria.class.getName());
-conexionBD con = new conexionBD();
+    conexionBD con = new conexionBD();
     DefaultTableModel dtm;
+
     public frm_sub_categoria() {
+        setUndecorated(true);
+
         initComponents();
         this.setLocationRelativeTo(null); // Centrar ventana
-        
+
         // Configurar modelo de la tabla
         dtm = new DefaultTableModel();
         dtm.addColumn("ID Subcat");
@@ -21,16 +24,15 @@ conexionBD con = new conexionBD();
         dtm.addColumn("Nombre Subcategoría");
         dtm.addColumn("Descripción");
         JTABLE_Mant_subCategoria.setModel(dtm);
-        
+
         // Cargar solo las categorías en el ComboBox al abrir (la tabla inicia vacía)
         cargarCategorias();
-        
+
         // Configuración inicial de campos
         txtcodigosubCategoria.setEnabled(false);
-    
+
     }
 
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -122,7 +124,7 @@ conexionBD con = new conexionBD();
         BTN_VerSubCategoria.addActionListener(this::BTN_VerSubCategoriaActionPerformed);
         jPanel3.add(BTN_VerSubCategoria, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 30, 230, 60));
 
-        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 930, 160));
+        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, 930, 160));
 
         BTN_Modificar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Modificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/ahorrar.png"))); // NOI18N
@@ -235,11 +237,11 @@ conexionBD con = new conexionBD();
     }//GEN-LAST:event_txtnombresubCategoriaKeyTyped
 
     private void BTN_VerSubCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_VerSubCategoriaActionPerformed
-this.listarSubcategorias();
+        this.listarSubcategorias();
     }//GEN-LAST:event_BTN_VerSubCategoriaActionPerformed
 
     private void BTN_ModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_ModificarActionPerformed
-try {
+        try {
             String codigoStr = txtcodigosubCategoria.getText().trim();
             String nombreSub = txtnombresubCategoria.getText().trim();
             String descripcion = txtdireccionsubCategoria.getText().trim();
@@ -279,7 +281,7 @@ try {
     }//GEN-LAST:event_BTN_GuardarMouseClicked
 
     private void BTN_GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_GuardarActionPerformed
-try {
+        try {
             String nombreSub = txtnombresubCategoria.getText().trim();
             String descripcion = txtdireccionsubCategoria.getText().trim();
             String nombreCategoria = (String) jcomboboxsubCategoria.getSelectedItem();
@@ -312,9 +314,9 @@ try {
     }//GEN-LAST:event_BTN_GuardarActionPerformed
 
     private void BTN_NuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_NuevoActionPerformed
-this.limpiarCampos();
-BTN_Guardar.setEnabled(true);
-    BTN_VerSubCategoria.setEnabled(true);
+        this.limpiarCampos();
+        BTN_Guardar.setEnabled(true);
+        BTN_VerSubCategoria.setEnabled(true);
 
     }//GEN-LAST:event_BTN_NuevoActionPerformed
 
@@ -323,7 +325,7 @@ BTN_Guardar.setEnabled(true);
     }//GEN-LAST:event_TXT_BUSCAR_subCategoriaActionPerformed
 
     private void TXT_BUSCAR_subCategoriaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXT_BUSCAR_subCategoriaKeyReleased
-String texto = TXT_BUSCAR_subCategoria.getText().trim();
+        String texto = TXT_BUSCAR_subCategoria.getText().trim();
 
         if (texto.isEmpty()) {
             listarSubcategorias();
@@ -353,12 +355,12 @@ String texto = TXT_BUSCAR_subCategoria.getText().trim();
     }//GEN-LAST:event_TXT_BUSCAR_subCategoriaKeyTyped
 
     private void JTABLE_Mant_subCategoriaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JTABLE_Mant_subCategoriaMouseClicked
-int filaSeleccionada = JTABLE_Mant_subCategoria.getSelectedRow();
+        int filaSeleccionada = JTABLE_Mant_subCategoria.getSelectedRow();
         if (filaSeleccionada >= 0) {
             txtcodigosubCategoria.setText(JTABLE_Mant_subCategoria.getValueAt(filaSeleccionada, 0).toString());
             txtnombresubCategoria.setText(JTABLE_Mant_subCategoria.getValueAt(filaSeleccionada, 3).toString());
             txtdireccionsubCategoria.setText(JTABLE_Mant_subCategoria.getValueAt(filaSeleccionada, 4).toString());
-            
+
             String categoriaNombre = JTABLE_Mant_subCategoria.getValueAt(filaSeleccionada, 2).toString();
             jcomboboxsubCategoria.setSelectedItem(categoriaNombre);
         }
@@ -366,7 +368,17 @@ int filaSeleccionada = JTABLE_Mant_subCategoria.getSelectedRow();
     }//GEN-LAST:event_JTABLE_Mant_subCategoriaMouseClicked
 
     private void BTN_Cerrar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_Cerrar1ActionPerformed
-this.dispose();
+        int opcion = JOptionPane.showConfirmDialog(
+                this,
+                "¿Estás seguro de que deseas cerrar el formulario?",
+                "Confirmar salida",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (opcion == JOptionPane.YES_OPTION) {
+            this.dispose(); // Cierra el formulario solo si elige "Sí"
+        }
     }//GEN-LAST:event_BTN_Cerrar1ActionPerformed
 
     private void BTN_EXCEL1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_EXCEL1ActionPerformed
@@ -475,6 +487,5 @@ private void cargarCategorias() {
         BTN_Guardar.setEnabled(true);
         BTN_Modificar.setEnabled(true);
     }
-
 
 }

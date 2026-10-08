@@ -13,13 +13,15 @@ public class frm_cargo extends javax.swing.JFrame {
     /* Objeto de conexión a la base de datos */
     conexionBD conexionBD;
 
-    public frm_cargo() {
+    public frm_cargo() {//
+        setUndecorated(true);
         initComponents();
         this.setLocationRelativeTo(null); //inicializa los compones visuales
         txtcodigocargo.setEnabled(false);
         BTN_Guardar.setEnabled(false);
         BTN_Modificar.setEnabled(false);
         BTN_Desactivar.setEnabled(false);
+        setLocationRelativeTo(null);
 
         /* Crear la conexión al iniciar el formulario */
         conexionBD = new conexionBD();
@@ -56,10 +58,10 @@ public class frm_cargo extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         txtcodigocargo = new javax.swing.JTextField();
         txtnombrecargo = new javax.swing.JTextField();
-        BTN_Vercargos = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jCheckBox1 = new javax.swing.JCheckBox();
         jCheckBox2 = new javax.swing.JCheckBox();
+        BTN_Vercargos = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         JTABLE_Mant_cargos = new javax.swing.JTable();
         BTN_Nuevo = new javax.swing.JButton();
@@ -94,7 +96,7 @@ public class frm_cargo extends javax.swing.JFrame {
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel3.setText("Nombre cargo");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, -1, -1));
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, -1, -1));
 
         txtcodigocargo.setEditable(false);
         txtcodigocargo.setBackground(new java.awt.Color(255, 255, 255));
@@ -102,7 +104,7 @@ public class frm_cargo extends javax.swing.JFrame {
         txtcodigocargo.setForeground(new java.awt.Color(0, 0, 204));
         txtcodigocargo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtcodigocargo.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel1.add(txtcodigocargo, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 20, 300, 30));
+        jPanel1.add(txtcodigocargo, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 20, 300, 40));
 
         txtnombrecargo.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         txtnombrecargo.setForeground(new java.awt.Color(0, 0, 204));
@@ -113,13 +115,7 @@ public class frm_cargo extends javax.swing.JFrame {
                 txtnombrecargoKeyTyped(evt);
             }
         });
-        jPanel1.add(txtnombrecargo, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 80, 300, 30));
-
-        BTN_Vercargos.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        BTN_Vercargos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/papel.png"))); // NOI18N
-        BTN_Vercargos.setText("VER CARGOS");
-        BTN_Vercargos.addActionListener(this::BTN_VercargosActionPerformed);
-        jPanel1.add(BTN_Vercargos, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 40, 140, 50));
+        jPanel1.add(txtnombrecargo, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 90, 300, 40));
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "acciones", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 12), new java.awt.Color(0, 51, 255))); // NOI18N
@@ -128,15 +124,20 @@ public class frm_cargo extends javax.swing.JFrame {
         jCheckBox1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jCheckBox1.setText("Listar cargo de baja");
         jCheckBox1.addActionListener(this::jCheckBox1ActionPerformed);
-        jPanel3.add(jCheckBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, -1, -1));
+        jPanel3.add(jCheckBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, -1, -1));
 
         jCheckBox2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jCheckBox2.setText("Reactivar cargo");
         jCheckBox2.addActionListener(this::jCheckBox2ActionPerformed);
-        jPanel3.add(jCheckBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, -1, -1));
+        jPanel3.add(jCheckBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 50, -1, -1));
 
-        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 10, 190, 110));
-        jPanel3.getAccessibleContext().setAccessibleName("acciones");
+        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 60, 190, 90));
+
+        BTN_Vercargos.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        BTN_Vercargos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/papel.png"))); // NOI18N
+        BTN_Vercargos.setText("VER CARGOS");
+        BTN_Vercargos.addActionListener(this::BTN_VercargosActionPerformed);
+        jPanel1.add(BTN_Vercargos, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 10, 140, 50));
 
         jPanel5.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 820, 160));
 
@@ -172,7 +173,7 @@ public class frm_cargo extends javax.swing.JFrame {
         BTN_Nuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/registro.png"))); // NOI18N
         BTN_Nuevo.setText("NUEVO");
         BTN_Nuevo.addActionListener(this::BTN_NuevoActionPerformed);
-        jPanel5.add(BTN_Nuevo, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 200, 190, 50));
+        jPanel5.add(BTN_Nuevo, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 210, 190, 50));
 
         BTN_Guardar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Guardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/disco-flexible (1).png"))); // NOI18N
@@ -183,25 +184,25 @@ public class frm_cargo extends javax.swing.JFrame {
             }
         });
         BTN_Guardar.addActionListener(this::BTN_GuardarActionPerformed);
-        jPanel5.add(BTN_Guardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 200, 190, 50));
+        jPanel5.add(BTN_Guardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 210, 190, 50));
 
         BTN_Modificar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Modificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/ahorrar.png"))); // NOI18N
         BTN_Modificar.setText("MODIFICAR");
         BTN_Modificar.addActionListener(this::BTN_ModificarActionPerformed);
-        jPanel5.add(BTN_Modificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 200, 200, 50));
+        jPanel5.add(BTN_Modificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 210, 200, 50));
 
         BTN_Desactivar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Desactivar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/expediente.png"))); // NOI18N
         BTN_Desactivar.setText("DAR DE BAJA");
         BTN_Desactivar.addActionListener(this::BTN_DesactivarActionPerformed);
-        jPanel5.add(BTN_Desactivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 200, 180, 50));
+        jPanel5.add(BTN_Desactivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 210, 180, 50));
 
         BTN_EXCEL.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_EXCEL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/excel.png"))); // NOI18N
         BTN_EXCEL.setText("Exportar");
         BTN_EXCEL.addActionListener(this::BTN_EXCELActionPerformed);
-        jPanel5.add(BTN_EXCEL, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 560, 120, 40));
+        jPanel5.add(BTN_EXCEL, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 580, 120, 40));
 
         jPanel2.setBackground(new java.awt.Color(0, 0, 0));
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -235,14 +236,14 @@ public class frm_cargo extends javax.swing.JFrame {
         BTN_Cerrar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/cerrado.png"))); // NOI18N
         BTN_Cerrar1.setText("Cerrar");
         BTN_Cerrar1.addActionListener(this::BTN_Cerrar1ActionPerformed);
-        jPanel5.add(BTN_Cerrar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 560, 130, 40));
+        jPanel5.add(BTN_Cerrar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 580, 130, 40));
 
         BTN_PDF.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/archivo-de-acrobat-reader.png"))); // NOI18N
         BTN_PDF.setText("Exportar");
         BTN_PDF.addActionListener(this::BTN_PDFActionPerformed);
-        jPanel5.add(BTN_PDF, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 560, 120, 40));
+        jPanel5.add(BTN_PDF, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 580, 120, 40));
 
-        getContentPane().add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 0, 900, 610));
+        getContentPane().add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 0, 900, 630));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -298,7 +299,6 @@ public class frm_cargo extends javax.swing.JFrame {
 // 1. Validar que el campo no esté vacío
 // 1. Validar que los campos no estén vacíos
         String nombre = txtnombrecargo.getText().trim();
-        
 
         if (nombre.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Ingrese el nombre del cargo",
@@ -330,7 +330,7 @@ public class frm_cargo extends javax.swing.JFrame {
     }//GEN-LAST:event_BTN_GuardarActionPerformed
 
     private void BTN_ModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_ModificarActionPerformed
-      String codStr = txtcodigocargo.getText().trim();
+        String codStr = txtcodigocargo.getText().trim();
         String nuevoNombre = txtnombrecargo.getText().trim();
         if (codStr.isEmpty() || nuevoNombre.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Seleccione un cargo y complete"
@@ -399,7 +399,7 @@ public class frm_cargo extends javax.swing.JFrame {
     }//GEN-LAST:event_TXT_BuscarcargosKeyTyped
 
     private void BTN_Cerrar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_Cerrar1ActionPerformed
-int confirmacion = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que deseas cerrar el formulario?", "Confirmar salida",
+        int confirmacion = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que deseas cerrar el formulario?", "Confirmar salida",
                 JOptionPane.YES_NO_OPTION);
         if (confirmacion == JOptionPane.YES_OPTION) {
             try {
@@ -418,7 +418,7 @@ int confirmacion = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que d
     }//GEN-LAST:event_BTN_PDFActionPerformed
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
-if (jCheckBox1.isSelected()) {
+        if (jCheckBox1.isSelected()) {
             mostrarCargosDeBaja();
         } else {
             mostrarCargos();
@@ -432,32 +432,32 @@ if (jCheckBox1.isSelected()) {
     private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox2ActionPerformed
         if (jCheckBox2.isSelected()) {
             String codStr = txtcodigocargo.getText().trim();
-            
+
             if (codStr.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Seleccione un cargo de baja de la tabla para reactivar.", "Atención", JOptionPane.WARNING_MESSAGE);
                 jCheckBox2.setSelected(false);
                 return;
             }
-            
+
             int codigo = Integer.parseInt(codStr);
             int respuesta = JOptionPane.showConfirmDialog(this, "¿Desea reactivar este cargo?", "Confirmación", JOptionPane.YES_NO_OPTION);
-            
+
             if (respuesta == JOptionPane.YES_OPTION) {
                 try {
-                    conexionBD.reactivarCargo(codigo); 
-                    
+                    conexionBD.reactivarCargo(codigo);
+
                     JOptionPane.showMessageDialog(this, "¡Cargo reactivado correctamente!", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                    
+
                     txtcodigocargo.setText("");
                     txtnombrecargo.setText("");
                     jCheckBox2.setSelected(false);
-                    
+
                     if (jCheckBox1.isSelected()) {
                         mostrarCargosDeBaja();
                     } else {
                         mostrarCargos();
                     }
-                    
+
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(this, "Error al reactivar:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     jCheckBox2.setSelected(false);
@@ -564,13 +564,12 @@ if (jCheckBox1.isSelected()) {
         }
     }
 
-    
     /* Método para listar los cargos de baja en la tabla */
     public void mostrarCargosDeBaja() {
         JTABLE_Mant_cargos.setAutoCreateRowSorter(true);
         modeloTablaCargo.setRowCount(0);
         try {
-            ResultSet rs = conexionBD.listarCargosDeBaja(); 
+            ResultSet rs = conexionBD.listarCargosDeBaja();
             while (rs.next()) {
                 Object[] fila = {
                     rs.getInt("id_cargo"),
@@ -584,10 +583,5 @@ if (jCheckBox1.isSelected()) {
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
-    
-    
-    
-    
-    
+
 }
