@@ -5,12 +5,17 @@ import javax.swing.table.DefaultTableModel; // Para trabajar con JTable
 import javax.swing.JOptionPane;
 
 public class frm_sucursal extends javax.swing.JFrame {
-DefaultTableModel dtm = new DefaultTableModel();
+
+    DefaultTableModel dtm = new DefaultTableModel();
     conexionBD conexionBD;
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(frm_sucursal.class.getName());
 
     public frm_sucursal() {
+        setUndecorated(true);
+
         initComponents();
+        setLocationRelativeTo(null);
+
         // 1. Configuración del Placeholder para la búsqueda
         TXT_BUSCAR_SUCURSAL.setText("Ingrese nombre de sucursal o empresa...");
         TXT_BUSCAR_SUCURSAL.setForeground(new java.awt.Color(153, 153, 153)); // Color gris tenue
@@ -58,10 +63,9 @@ DefaultTableModel dtm = new DefaultTableModel();
         JTABLE_Mant_Sucursal.getColumnModel().getColumn(1).setMinWidth(0);
         JTABLE_Mant_Sucursal.getColumnModel().getColumn(1).setMaxWidth(0);
         JTABLE_Mant_Sucursal.getColumnModel().getColumn(1).setWidth(0);
-        
+
     }
 
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -293,7 +297,7 @@ DefaultTableModel dtm = new DefaultTableModel();
     }//GEN-LAST:event_BTN_VerSucursalActionPerformed
 
     private void BTN_ModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_ModificarActionPerformed
-try {
+        try {
             String codigoStr = txtcodigosucursal.getText().trim();
             String nombreSucursal = txtnombresucursal.getText().trim();
             String direccion = txtdireccionsucursal.getText().trim();
@@ -344,7 +348,7 @@ try {
     }//GEN-LAST:event_BTN_GuardarMouseClicked
 
     private void BTN_GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_GuardarActionPerformed
-try {
+        try {
             String nombreSucursal = txtnombresucursal.getText().trim();
             String direccion = txtdireccionsucursal.getText().trim();
             String telefono = txttelefono.getText().trim();
@@ -387,7 +391,7 @@ try {
     }//GEN-LAST:event_BTN_GuardarActionPerformed
 
     private void BTN_NuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_NuevoActionPerformed
-this.limpiarCamposSucursal();
+        this.limpiarCamposSucursal();
         BTN_Guardar.setEnabled(true);
         BTN_Modificar.setEnabled(false);
         BTN_VerSucursal.setEnabled(true);
@@ -398,7 +402,7 @@ this.limpiarCamposSucursal();
     }//GEN-LAST:event_TXT_BUSCAR_SUCURSALActionPerformed
 
     private void TXT_BUSCAR_SUCURSALKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXT_BUSCAR_SUCURSALKeyReleased
-String texto = TXT_BUSCAR_SUCURSAL.getText().trim();
+        String texto = TXT_BUSCAR_SUCURSAL.getText().trim();
 
         if (texto.equals("Ingrese nombre de sucursal...") || texto.isEmpty()) {
             dtm.setRowCount(0);
@@ -430,7 +434,7 @@ String texto = TXT_BUSCAR_SUCURSAL.getText().trim();
     }//GEN-LAST:event_TXT_BUSCAR_SUCURSALKeyTyped
 
     private void JTABLE_Mant_SucursalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JTABLE_Mant_SucursalMouseClicked
-int filaSeleccionada = JTABLE_Mant_Sucursal.getSelectedRow();
+        int filaSeleccionada = JTABLE_Mant_Sucursal.getSelectedRow();
         if (filaSeleccionada == -1) {
             return;
         }
@@ -440,13 +444,13 @@ int filaSeleccionada = JTABLE_Mant_Sucursal.getSelectedRow();
 
         try {
             txtcodigosucursal.setText(JTABLE_Mant_Sucursal.getValueAt(filaSeleccionada, 0).toString().trim());
-            
+
             String empresaTabla = JTABLE_Mant_Sucursal.getValueAt(filaSeleccionada, 2).toString().trim();
             jcomboboxsucursal.setSelectedItem(empresaTabla);
 
             txtnombresucursal.setText(JTABLE_Mant_Sucursal.getValueAt(filaSeleccionada, 3).toString().trim());
             txtdireccionsucursal.setText(JTABLE_Mant_Sucursal.getValueAt(filaSeleccionada, 4).toString().trim());
-            
+
             Object telObj = JTABLE_Mant_Sucursal.getValueAt(filaSeleccionada, 5);
             txttelefono.setText((telObj != null) ? telObj.toString().trim() : "");
 
@@ -454,12 +458,12 @@ int filaSeleccionada = JTABLE_Mant_Sucursal.getSelectedRow();
             JOptionPane.showMessageDialog(this, "Error al seleccionar el registro: " + e.getMessage(), "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
-    
+
     }//GEN-LAST:event_JTABLE_Mant_SucursalMouseClicked
 
     private void BTN_Cerrar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_Cerrar1ActionPerformed
         int confirmacion = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que deseas cerrar el formulario?", "Confirmar salida",
-            JOptionPane.YES_NO_OPTION);
+                JOptionPane.YES_NO_OPTION);
         if (confirmacion == JOptionPane.YES_OPTION) {
             try {
                 // Cerrar conexión si tienes un método cerrarConexion()
@@ -554,7 +558,7 @@ int filaSeleccionada = JTABLE_Mant_Sucursal.getSelectedRow();
         }
     }
 
-private void listarSucursales_Activas() {
+    private void listarSucursales_Activas() {
         JTABLE_Mant_Sucursal.setAutoCreateRowSorter(true);
         dtm.setRowCount(0);
 
