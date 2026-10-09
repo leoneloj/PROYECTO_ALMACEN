@@ -14,7 +14,11 @@ public class frm_Empresa extends javax.swing.JFrame {
     conexionBD conexionBD;
 
     public frm_Empresa() {
+                setUndecorated(true);
+
         initComponents();
+                this.setLocationRelativeTo(null); // Centrar ventana
+
         txtcodigoempresa.setEnabled(false);
         BTN_Guardar.setEnabled(false);
         BTN_Modificar.setEnabled(false);
@@ -97,7 +101,7 @@ public class frm_Empresa extends javax.swing.JFrame {
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel3.setText("Correo");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 80, -1, -1));
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 120, -1, -1));
 
         txtcodigoempresa.setEditable(false);
         txtcodigoempresa.setBackground(new java.awt.Color(255, 255, 255));
@@ -111,7 +115,7 @@ public class frm_Empresa extends javax.swing.JFrame {
         BTN_VerEmpresas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/papel.png"))); // NOI18N
         BTN_VerEmpresas.setText("VER EMPRESAS");
         BTN_VerEmpresas.addActionListener(this::BTN_VerEmpresasActionPerformed);
-        jPanel1.add(BTN_VerEmpresas, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 100, 180, 50));
+        jPanel1.add(BTN_VerEmpresas, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 10, 180, 50));
 
         txtrazonsocial.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         txtrazonsocial.setForeground(new java.awt.Color(0, 0, 204));
@@ -134,7 +138,7 @@ public class frm_Empresa extends javax.swing.JFrame {
                 txtcorreoempresaKeyTyped(evt);
             }
         });
-        jPanel1.add(txtcorreoempresa, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 60, 290, 30));
+        jPanel1.add(txtcorreoempresa, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 110, 290, 30));
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel7.setText("Razon social");
@@ -160,7 +164,7 @@ public class frm_Empresa extends javax.swing.JFrame {
                 txttelefonoempresaKeyTyped(evt);
             }
         });
-        jPanel1.add(txttelefonoempresa, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 20, 290, 30));
+        jPanel1.add(txttelefonoempresa, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 70, 290, 30));
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel6.setText("Ruc");
@@ -168,9 +172,9 @@ public class frm_Empresa extends javax.swing.JFrame {
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel8.setText("Telefono");
-        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 30, -1, -1));
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 90, -1, -1));
 
-        jPanel5.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 960, 160));
+        jPanel5.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 900, 160));
 
         JTABLE_Mant_Empresa.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         JTABLE_Mant_Empresa.setForeground(new java.awt.Color(0, 0, 204));
@@ -198,13 +202,13 @@ public class frm_Empresa extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(JTABLE_Mant_Empresa);
 
-        jPanel5.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 330, 970, 220));
+        jPanel5.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 330, 920, 220));
 
         BTN_Nuevo.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Nuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/registro.png"))); // NOI18N
         BTN_Nuevo.setText("NUEVO");
         BTN_Nuevo.addActionListener(this::BTN_NuevoActionPerformed);
-        jPanel5.add(BTN_Nuevo, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 210, 190, 50));
+        jPanel5.add(BTN_Nuevo, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 210, 190, 50));
 
         BTN_Guardar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Guardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/disco-flexible (1).png"))); // NOI18N
@@ -215,19 +219,19 @@ public class frm_Empresa extends javax.swing.JFrame {
             }
         });
         BTN_Guardar.addActionListener(this::BTN_GuardarActionPerformed);
-        jPanel5.add(BTN_Guardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 210, 190, 50));
+        jPanel5.add(BTN_Guardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 210, 190, 50));
 
         BTN_Modificar.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Modificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/ahorrar.png"))); // NOI18N
         BTN_Modificar.setText("MODIFICAR");
         BTN_Modificar.addActionListener(this::BTN_ModificarActionPerformed);
-        jPanel5.add(BTN_Modificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 210, 200, 50));
+        jPanel5.add(BTN_Modificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 210, 200, 50));
 
         BTN_EXCEL.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_EXCEL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/archivo-de-acrobat-reader.png"))); // NOI18N
         BTN_EXCEL.setText("Exportar");
         BTN_EXCEL.addActionListener(this::BTN_EXCELActionPerformed);
-        jPanel5.add(BTN_EXCEL, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 560, 120, 40));
+        jPanel5.add(BTN_EXCEL, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 560, 120, 40));
 
         jPanel2.setBackground(new java.awt.Color(0, 0, 0));
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -242,7 +246,7 @@ public class frm_Empresa extends javax.swing.JFrame {
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
         jLabel5.setText("BUSCAR");
-        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 10, 120, 30));
+        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 10, 120, 30));
 
         TXT_Buscarempresa.addActionListener(this::TXT_BuscarempresaActionPerformed);
         TXT_Buscarempresa.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -255,21 +259,21 @@ public class frm_Empresa extends javax.swing.JFrame {
         });
         jPanel2.add(TXT_Buscarempresa, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 10, 440, -1));
 
-        jPanel5.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 270, 970, 50));
+        jPanel5.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 270, 910, 50));
 
         BTN_Cerrar1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_Cerrar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/cerrado.png"))); // NOI18N
         BTN_Cerrar1.setText("Cerrar");
         BTN_Cerrar1.addActionListener(this::BTN_Cerrar1ActionPerformed);
-        jPanel5.add(BTN_Cerrar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 560, 130, 40));
+        jPanel5.add(BTN_Cerrar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 560, 130, 40));
 
         BTN_EXCEL1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         BTN_EXCEL1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/excel.png"))); // NOI18N
         BTN_EXCEL1.setText("Exportar");
         BTN_EXCEL1.addActionListener(this::BTN_EXCEL1ActionPerformed);
-        jPanel5.add(BTN_EXCEL1, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 560, 120, 40));
+        jPanel5.add(BTN_EXCEL1, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 560, 120, 40));
 
-        getContentPane().add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 1020, 610));
+        getContentPane().add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 970, 610));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

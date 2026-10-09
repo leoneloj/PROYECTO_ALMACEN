@@ -699,3 +699,646 @@ DELIMITER ;
 
 -- Ejemplo de uso:
 CALL sp_subcategoria_actualizar(1, 1, 'Audio, Video y Streaming', 'Equipos de sonido, televisores y streaming');
+
+
+
+-- ============================================================
+-- VISTA: DETALLE COMPRA
+-- ============================================================
+
+-- 1. Vista mostrar detalles de compra (incluye información relacionada de compra y producto)
+CREATE OR REPLACE VIEW vw_detalle_compra_activa AS
+SELECT 
+    DC.id_detalle_compra,
+    DC.id_compra,
+    C.fecha AS fecha_compra,
+    DC.id_producto,
+    P.codigo AS codigo_producto,
+    P.nombre_producto,
+    DC.cantidad,
+    DC.precio_compra,
+    DC.subtotal
+FROM detalle_compra DC
+INNER JOIN compra C ON DC.id_compra = C.id_compra
+INNER JOIN producto P ON DC.id_producto = P.id_producto;
+
+-- Prueba de la vista
+SELECT * FROM vw_detalle_compra_activa;
+
+-- ============================================================
+-- MÓDULO CRUD: DETALLE COMPRA
+-- ============================================================
+
+-- 2. Procedure para buscar detalles de compra por ID de Compra
+DROP PROCEDURE IF EXISTS sp_detalle_compra_buscar;
+DELIMITER //
+CREATE PROCEDURE sp_detalle_compra_buscar(IN p_idCompra INT)
+BEGIN
+    SELECT 
+        id_detalle_compra,
+        id_compra,
+        fecha_compra,
+        id_producto,
+        codigo_producto,
+        nombre_producto,
+        cantidad,
+        precio_compra,
+        subtotal
+    FROM vw_detalle_compra_activa
+    WHERE (p_idCompra = 0 OR p_idCompra IS NULL OR id_compra = p_idCompra);
+END //
+DELIMITER ;
+
+-- Ejemplo de uso:
+CALL sp_detalle_compra_buscar(1);
+CALL sp_detalle_compra_buscar(0); -- Devuelve todos los registros si se envía 0 o nulo
+
+-- 3. Procedure para insertar un detalle de compra
+DROP PROCEDURE IF EXISTS sp_detalle_compra_insertar;
+DELIMITER $$
+CREATE PROCEDURE sp_detalle_compra_insertar(
+    IN p_idCompra INT,
+    IN p_idProducto INT,
+    IN p_cantidad INT,
+    IN p_precioCompra DECIMAL(10,2)
+)
+BEGIN
+    DECLARE v_subtotal DECIMAL(10,2);
+    
+    -- Validar que la compra exista
+    IF p_idCompra <= 0 OR p_idCompra IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El ID de la compra no es válido.';
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM compra WHERE id_compra = p_idCompra) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'La compra especificada no existe.';
+    END IF;
+    
+    -- Validar que el producto exista
+    IF p_idProducto <= 0 OR p_idProducto IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El ID del producto no es válido.';
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM producto WHERE id_producto = p_idProducto) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El producto especificado no existe.';
+    END IF;
+    
+    -- Validar restricciones de cantidad y precio
+    IF p_cantidad <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'La cantidad debe ser mayor a cero.';
+    END IF;
+    
+    IF p_precioCompra < 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El precio de compra no puede ser negativo.';
+    END IF;
+    
+    -- Cálculo automático del subtotal
+    SET v_subtotal = p_cantidad * p_precioCompra;
+    
+    -- Inserción del registro
+    INSERT INTO detalle_compra (id_compra, id_producto, cantidad, precio_compra, subtotal)
+    VALUES (p_idCompra, p_idProducto, p_cantidad, p_precioCompra, v_subtotal);
+END$$
+DELIMITER ;
+
+-- Ejemplo de uso:
+CALL sp_detalle_compra_insertar(1, 2, 5, 250.00);
+
+-- 4. Procedure para modificar un detalle de compra
+DROP PROCEDURE IF EXISTS sp_detalle_compra_actualizar;
+DELIMITER //
+CREATE PROCEDURE sp_detalle_compra_actualizar (
+    IN p_idDetalleCompra INT,
+    IN p_idCompra INT,
+    IN p_idProducto INT,
+    IN p_cantidad INT,
+    IN p_precioCompra DECIMAL(10,2)
+)
+BEGIN
+    DECLARE v_subtotal DECIMAL(10,2);
+    
+    -- Validar ID del detalle
+    IF p_idDetalleCompra <= 0 OR p_idDetalleCompra IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El ID del detalle de compra no es válido.';
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM detalle_compra WHERE id_detalle_compra = p_idDetalleCompra) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El detalle de compra que intenta modificar no existe.';
+    END IF;
+    
+    -- Validar que la compra exista
+    IF p_idCompra <= 0 OR p_idCompra IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El ID de la compra no es válido.';
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM compra WHERE id_compra = p_idCompra) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'La compra especificada no existe.';
+    END IF;
+    
+    -- Validar que el producto exista
+    IF p_idProducto <= 0 OR p_idProducto IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El ID del producto no es válido.';
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM producto WHERE id_producto = p_idProducto) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El producto especificado no existe.';
+    END IF;
+    
+    -- Validar cantidad y precio
+    IF p_cantidad <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'La cantidad debe ser mayor a cero.';
+    END IF;
+    
+    IF p_precioCompra < 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El precio de compra no puede ser negativo.';
+    END IF;
+    
+    -- Recálculo del subtotal
+    SET v_subtotal = p_cantidad * p_precioCompra;
+    
+    -- Actualización
+    UPDATE detalle_compra
+    SET id_compra = p_idCompra,
+        id_producto = p_idProducto,
+        cantidad = p_cantidad,
+        precio_compra = p_precioCompra,
+        subtotal = v_subtotal
+    WHERE id_detalle_compra = p_idDetalleCompra;
+END //
+DELIMITER ;
+
+-- Ejemplo de uso:
+CALL sp_detalle_compra_actualizar(1, 1, 3, 2, 2500.00);
+
+
+
+-- ============================================================
+-- VISTA: DETALLE VENTA
+-- ============================================================
+
+-- 1. Vista mostrar detalles de venta (incluye información relacionada de venta y producto)
+CREATE OR REPLACE VIEW vw_detalle_venta_activa AS
+SELECT 
+    DV.id_detalle_venta,
+    DV.id_venta,
+    V.fecha AS fecha_venta,
+    DV.id_producto,
+    P.codigo AS codigo_producto,
+    P.nombre_producto,
+    DV.cantidad,
+    DV.precio_venta,
+    (DV.cantidad * DV.precio_venta) AS subtotal
+FROM detalle_venta DV
+INNER JOIN venta V ON DV.id_venta = V.id_venta
+INNER JOIN producto P ON DV.id_producto = P.id_producto;
+
+-- Prueba de la vista
+SELECT * FROM vw_detalle_venta_activa;
+
+-- ============================================================
+-- MÓDULO CRUD: DETALLE VENTA
+-- ============================================================
+
+-- 2. Procedure para buscar detalles de venta por ID de Venta
+DROP PROCEDURE IF EXISTS sp_detalle_venta_buscar;
+DELIMITER //
+CREATE PROCEDURE sp_detalle_venta_buscar(IN p_idVenta INT)
+BEGIN
+    SELECT 
+        id_detalle_venta,
+        id_venta,
+        fecha_venta,
+        id_producto,
+        codigo_producto,
+        nombre_producto,
+        cantidad,
+        precio_venta,
+        subtotal
+    FROM vw_detalle_venta_activa
+    WHERE (p_idVenta = 0 OR p_idVenta IS NULL OR id_venta = p_idVenta);
+END //
+DELIMITER ;
+
+-- Ejemplo de uso:
+CALL sp_detalle_venta_buscar(1);
+CALL sp_detalle_venta_buscar(0); -- Devuelve todos los registros si se envía 0 o nulo
+
+-- 3. Procedure para insertar un detalle de venta
+DROP PROCEDURE IF EXISTS sp_detalle_venta_insertar;
+DELIMITER $$
+CREATE PROCEDURE sp_detalle_venta_insertar(
+    IN p_idVenta INT,
+    IN p_idProducto INT,
+    IN p_cantidad INT,
+    IN p_precioVenta DECIMAL(10,2)
+)
+BEGIN
+    -- Validar que la venta exista
+    IF p_idVenta <= 0 OR p_idVenta IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El ID de la venta no es válido.';
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM venta WHERE id_venta = p_idVenta) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'La venta especificada no existe.';
+    END IF;
+    
+    -- Validar que el producto exista
+    IF p_idProducto <= 0 OR p_idProducto IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El ID del producto no es válido.';
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM producto WHERE id_producto = p_idProducto) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El producto especificado no existe.';
+    END IF;
+    
+    -- Validar restricciones de cantidad y precio
+    IF p_cantidad <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'La cantidad debe ser mayor a cero.';
+    END IF;
+    
+    IF p_precioVenta < 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El precio de venta no puede ser negativo.';
+    END IF;
+    
+    -- Inserción del registro
+    INSERT INTO detalle_venta (id_venta, id_producto, cantidad, precio_venta)
+    VALUES (p_idVenta, p_idProducto, p_cantidad, p_precioVenta);
+END$$
+DELIMITER ;
+
+-- Ejemplo de uso:
+CALL sp_detalle_venta_insertar(1, 2, 1, 250.00);
+
+-- 4. Procedure para modificar un detalle de venta
+DROP PROCEDURE IF EXISTS sp_detalle_venta_actualizar;
+DELIMITER //
+CREATE PROCEDURE sp_detalle_venta_actualizar (
+    IN p_idDetalleVenta INT,
+    IN p_idVenta INT,
+    IN p_idProducto INT,
+    IN p_cantidad INT,
+    IN p_precioVenta DECIMAL(10,2)
+)
+BEGIN
+    -- Validar ID del detalle
+    IF p_idDetalleVenta <= 0 OR p_idDetalleVenta IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El ID del detalle de venta no es válido.';
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM detalle_venta WHERE id_detalle_venta = p_idDetalleVenta) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El detalle de venta que intenta modificar no existe.';
+    END IF;
+    
+    -- Validar que la venta exista
+    IF p_idVenta <= 0 OR p_idVenta IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El ID de la venta no es válido.';
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM venta WHERE id_venta = p_idVenta) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'La venta especificada no existe.';
+    END IF;
+    
+    -- Validar que el producto exista
+    IF p_idProducto <= 0 OR p_idProducto IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El ID del producto no es válido.';
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM producto WHERE id_producto = p_idProducto) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El producto especificado no existe.';
+    END IF;
+    
+    -- Validar cantidad y precio
+    IF p_cantidad <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'La cantidad debe ser mayor a cero.';
+    END IF;
+    
+    IF p_precioVenta < 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El precio de venta no puede ser negativo.';
+    END IF;
+    
+    -- Actualización
+    UPDATE detalle_venta
+    SET id_venta = p_idVenta,
+        id_producto = p_idProducto,
+        cantidad = p_cantidad,
+        precio_venta = p_precioVenta
+    WHERE id_detalle_venta = p_idDetalleVenta;
+END //
+DELIMITER ;
+
+-- Ejemplo de uso:
+CALL sp_detalle_venta_actualizar(1, 1, 3, 1, 2800.00);
+
+-- ============================================================
+-- VISTAS: USUARIO
+-- ============================================================
+ 
+-- 1. Vista mostrar usuarios activos
+CREATE OR REPLACE VIEW vw_usuario_activo AS
+SELECT 
+    U.id_usuario,
+    U.codigo,
+    U.password,
+    U.id_cargo,
+    C.nombre_cargo,
+    U.id_personal,
+    IFNULL(CONCAT(P.nombres, ' ', P.apellidos), 'Sin personal') AS personal,
+    CASE 
+        WHEN U.estado_usuario = 1 THEN 'Activo'
+        ELSE 'Inactivo'
+    END AS estado_usuario
+FROM usuario U
+INNER JOIN cargo C ON U.id_cargo = C.id_cargo
+LEFT JOIN personal P ON U.id_personal = P.id_personal
+WHERE U.estado_usuario = 1;
+ 
+-- Prueba de la vista
+SELECT * FROM vw_usuario_activo;
+ 
+-- 2. Vista mostrar usuarios inactivos
+CREATE OR REPLACE VIEW vw_usuario_inactivo AS
+SELECT 
+    U.id_usuario,
+    U.codigo,
+    U.password,
+    U.id_cargo,
+    C.nombre_cargo,
+    U.id_personal,
+    IFNULL(CONCAT(P.nombres, ' ', P.apellidos), 'Sin personal') AS personal,
+    CASE 
+        WHEN U.estado_usuario = 1 THEN 'Activo'
+        ELSE 'Inactivo'
+    END AS estado_usuario
+FROM usuario U
+INNER JOIN cargo C ON U.id_cargo = C.id_cargo
+LEFT JOIN personal P ON U.id_personal = P.id_personal
+WHERE U.estado_usuario = 0;
+ 
+-- Prueba de la vista
+SELECT * FROM vw_usuario_inactivo;
+ 
+-- ============================================================
+-- MÓDULO CRUD: USUARIO
+-- ============================================================
+ 
+-- 3. Procedure para buscar usuarios por código, cargo o personal
+DROP PROCEDURE IF EXISTS sp_usuario_buscar;
+DELIMITER //
+CREATE PROCEDURE sp_usuario_buscar(IN p_filtroUsuario VARCHAR(50))
+BEGIN
+    DECLARE v_filtro VARCHAR(50);
+    SET v_filtro = TRIM(IFNULL(p_filtroUsuario, ''));
+    
+    SELECT 
+        id_usuario,
+        codigo,
+        password,
+        id_cargo,
+        nombre_cargo,
+        id_personal,
+        personal,
+        estado_usuario
+    FROM vw_usuario_activo
+    WHERE (v_filtro = '' 
+           OR codigo LIKE CONCAT('%', v_filtro, '%') 
+           OR nombre_cargo LIKE CONCAT('%', v_filtro, '%')
+           OR personal LIKE CONCAT('%', v_filtro, '%'));
+END //
+DELIMITER ;
+ 
+-- Ejemplo de uso:
+CALL sp_usuario_buscar('admin');
+CALL sp_usuario_buscar('');
+ 
+-- 4. Procedure para insertar un usuario
+DROP PROCEDURE IF EXISTS sp_usuario_insertar;
+DELIMITER $$
+CREATE PROCEDURE sp_usuario_insertar(
+    IN p_codigo VARCHAR(15),
+    IN p_password VARCHAR(255),
+    IN p_idCargo INT,
+    IN p_idPersonal INT
+)
+BEGIN
+    DECLARE v_codigoLim VARCHAR(15);
+    SET v_codigoLim = TRIM(IFNULL(p_codigo, ''));
+    
+    IF v_codigoLim = '' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El código de usuario no puede estar vacío.';
+    END IF;
+    
+    IF p_password IS NULL OR TRIM(p_password) = '' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'La contraseña no puede estar vacía.';
+    END IF;
+    
+    IF p_idCargo IS NULL OR p_idCargo <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El ID del cargo no es válido.';
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM cargo WHERE id_cargo = p_idCargo AND estado_cargo = 1) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El cargo seleccionado no existe o está inactivo.';
+    END IF;
+    
+    IF p_idPersonal IS NOT NULL 
+       AND NOT EXISTS (SELECT 1 FROM personal WHERE id_personal = p_idPersonal) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El personal seleccionado no existe.';
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM usuario WHERE codigo = v_codigoLim) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El código de usuario ya se encuentra registrado.';
+    ELSE
+        INSERT INTO usuario (codigo, password, id_cargo, id_personal, estado_usuario)
+        VALUES (v_codigoLim, TRIM(p_password), p_idCargo, p_idPersonal, 1);
+    END IF;
+END$$
+DELIMITER ;
+ 
+-- Ejemplo de uso (comentado para no insertar datos al ejecutar el script):
+ CALL sp_usuario_insertar('USR_PRUEBA', 'hash_de_prueba', 3, NULL);
+ 
+-- 5. Procedure para modificar un usuario (código, cargo y personal)
+DROP PROCEDURE IF EXISTS sp_usuario_actualizar;
+DELIMITER //
+CREATE PROCEDURE sp_usuario_actualizar (
+    IN p_idUsuario INT,
+    IN p_codigo VARCHAR(15),
+    IN p_idCargo INT,
+    IN p_idPersonal INT
+)
+BEGIN
+    DECLARE v_codigoLim VARCHAR(15);
+    SET v_codigoLim = TRIM(IFNULL(p_codigo, ''));
+    
+    IF p_idUsuario IS NULL OR p_idUsuario <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El ID del usuario no es válido.';
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM usuario WHERE id_usuario = p_idUsuario) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El usuario que intenta modificar no existe.';
+    END IF;
+    
+    IF v_codigoLim = '' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El código de usuario no puede estar vacío.';
+    END IF;
+    
+    IF p_idCargo IS NULL OR p_idCargo <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El ID del cargo no es válido.';
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM cargo WHERE id_cargo = p_idCargo AND estado_cargo = 1) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El cargo seleccionado no existe o está inactivo.';
+    END IF;
+    
+    IF p_idPersonal IS NOT NULL 
+       AND NOT EXISTS (SELECT 1 FROM personal WHERE id_personal = p_idPersonal) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El personal seleccionado no existe.';
+    END IF;
+    
+    IF EXISTS (
+        SELECT 1 FROM usuario
+        WHERE codigo = v_codigoLim AND id_usuario != p_idUsuario
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Ya existe otro usuario registrado con ese mismo código.';
+    ELSE
+        UPDATE usuario
+        SET codigo = v_codigoLim,
+            id_cargo = p_idCargo,
+            id_personal = p_idPersonal
+        WHERE id_usuario = p_idUsuario;
+    END IF;
+END //
+DELIMITER ;
+ 
+-- Ejemplo de uso (comentado):
+ CALL sp_usuario_actualizar(11, 'USR_PRUEBA2', 3, NULL);
+ 
+-- 6. Procedure para dar de baja lógica a un usuario
+DROP PROCEDURE IF EXISTS sp_usuario_desactivar;
+DELIMITER //
+CREATE PROCEDURE sp_usuario_desactivar(IN p_idUsuario INT)
+BEGIN
+    IF p_idUsuario IS NULL OR p_idUsuario <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El ID del usuario no es válido.';
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM usuario WHERE id_usuario = p_idUsuario) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El usuario especificado no existe.';
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM usuario WHERE id_usuario = p_idUsuario AND estado_usuario = 0) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El usuario ya se encuentra inactivo.';
+    END IF;
+    
+    UPDATE usuario 
+    SET estado_usuario = 0 
+    WHERE id_usuario = p_idUsuario;
+END //
+DELIMITER ;
+ 
+-- Ejemplo de uso (comentado para no desactivar usuarios reales):
+ CALL sp_usuario_desactivar(11);
+ 
+-- 7. Procedure para reactivar un usuario
+DROP PROCEDURE IF EXISTS sp_usuario_reactivar;
+DELIMITER //
+CREATE PROCEDURE sp_usuario_reactivar(IN p_idUsuario INT)
+BEGIN
+    IF p_idUsuario IS NULL OR p_idUsuario <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El ID del usuario no es válido.';
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM usuario WHERE id_usuario = p_idUsuario) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El usuario especificado no existe.';
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM usuario WHERE id_usuario = p_idUsuario AND estado_usuario = 1) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El usuario ya se encuentra activo.';
+    END IF;
+    
+    UPDATE usuario 
+    SET estado_usuario = 1 
+    WHERE id_usuario = p_idUsuario;
+END //
+DELIMITER ;
+ 
+-- Ejemplo de uso (comentado):
+CALL sp_usuario_reactivar(11);
+ 
+-- 8. Procedure para restablecer la contraseña (recibe el hash desde Java)
+DROP PROCEDURE IF EXISTS sp_usuario_reset_password;
+DELIMITER //
+CREATE PROCEDURE sp_usuario_reset_password(
+    IN p_idUsuario INT,
+    IN p_password VARCHAR(255)
+)
+BEGIN
+    IF p_idUsuario IS NULL OR p_idUsuario <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El ID del usuario no es válido.';
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM usuario WHERE id_usuario = p_idUsuario) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El usuario especificado no existe.';
+    END IF;
+    
+    IF p_password IS NULL OR TRIM(p_password) = '' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'La nueva contraseña no puede estar vacía.';
+    END IF;
+    
+    UPDATE usuario 
+    SET password = TRIM(p_password) 
+    WHERE id_usuario = p_idUsuario;
+END //
+DELIMITER ;
+ 
+-- Ejemplo de uso (comentado):
+ CALL sp_usuario_reset_password(11, 'hash_de_prueba');
